@@ -1,0 +1,70 @@
+{% extends 'rental/base.html' %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="relative" data-aos="fade-right">
+                <img src="{{ car.image.url }}" alt="{{ car.name }}" class="w-full h-[500px] object-cover">
+                {% if car.is_available %}
+                    <span class="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-full">
+                        Available Now
+                    </span>
+                {% endif %}
+            </div>
+            
+            <div class="p-8" data-aos="fade-left">
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ car.brand }} {{ car.name }}</h1>
+                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                    <p class="text-gray-700 text-lg leading-relaxed">{{ car.description }}</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6 mb-8">
+                    <div class="space-y-4">
+                        <div class="flex items-center text-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span class="text-lg">{{ car.model_year }}</span>
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                            <span class="text-lg">{{ car.get_transmission_display }}</span>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center text-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span class="text-lg">{{ car.seats }} Seats</span>
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-lg">${{ car.price_per_day }}/day</span>
+                        </div>
+                    </div>
+                </div>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'book_car' car.id %}" 
+                       class="btn-primary inline-block w-full text-center text-lg" data-aos="zoom-in">
+                        Book Now
+                    </a>
+                {% else %}
+                    <div class="text-center p-6 bg-gray-50 rounded-lg" data-aos="fade-up">
+                        <p class="text-gray-600 mb-4">Please login to book this car</p>
+                        <a href="{% url 'login' %}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                            Login Now →
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

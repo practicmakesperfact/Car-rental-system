@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HA Car Rental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+        }
+        .btn-primary {
+            @apply bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300;
+        }
+        .input-field {
+            @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <a href="{% url 'home' %}" class="text-2xl font-bold flex items-center space-x-2" data-aos="fade-right">                
+                    <span>HA Car Rental</span>
+                </a>
+                <div class="space-x-6" data-aos="fade-left">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'rental_history' %}" class="hover:text-blue-200 transition-colors duration-300">My Rentals</a>
+                        <a href="{% url 'logout' %}" class="hover:text-blue-200 transition-colors duration-300">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="hover:text-blue-200 transition-colors duration-300">Login</a>
+                        <a href="{% url 'register' %}" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-300">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto mt-8 px-4 pb-16">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4" data-aos="fade-down">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="gradient-bg text-white mt-16 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8" data-aos="fade-up">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">About Us</h3>
+                    <p class="text-blue-100">We provide premium car rental services across Ethiopia with a wide range of vehicles to choose from.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Contact</h3>
+                    <p class="text-blue-100">Email: haymanotasmaretakele@gmail.com</p>
+                    <p class="text-blue-100">Phone: +251 906287552</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Follow Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-100 hover:text-white transition-colors duration-300">LinkedIn</a>
+                        <a href="#" class="text-blue-100 hover:text-white transition-colors duration-300">Github</a>
+                        <a href="#" class="text-blue-100 hover:text-white transition-colors duration-300">Telegram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-8 text-blue-100">
+                <p>&copy; 2025 HA Car Rental. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+    </script>
+</body>
+</html>
