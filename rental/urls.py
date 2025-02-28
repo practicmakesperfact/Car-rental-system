@@ -9,4 +9,8 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('available-cars/', views.available_cars, name='available_cars'),
     path('locations/', views.locations, name='locations'),
+#     path('profile/', views.profile, name='profile'),
+#     path('reviews/', views.reviews_list, name='reviews_list'),
+#     path('location/', views.location_list, name='location_list'),
+#     path('payment/', views.payment, name='payment'),
 ]

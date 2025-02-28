@@ -63,3 +63,8 @@ def available_cars(request):
 
 def locations(request):
     return render(request, 'rental/locations.html')
+
+@login_required
+def profile(request):
+    profile = get_object_or_404(CustomProfile, user=request.user)
+    return render(request, 'rental/profile.html', {'profile': profile})

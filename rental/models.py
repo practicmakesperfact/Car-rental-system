@@ -40,3 +40,36 @@ class Rental(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.car.name} ({self.start_date} to {self.end_date})"
+class CustomProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=15)
+    address = models.CharField(max_length=200)
+    def __str__(self):
+        return self.user.username
+
+class Payment(models.Model):
+    rental = models.ForeignKey(Rental, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=50, decimal_places=2)
+    payment_date = models.DateTimeField(auto_now_add=True)
+    payment_method = models.CharField(max_length=50)
+    transaction_id = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return f"Payment for {self.rental}"
+    
+class Location(models.Model):
+    name = models.CharField(max_length=100)
+    address = models.TextField()
+    
+    def __str__(self):
+        return self.name
+    
+class Review(models.Model):
+    Car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"Review by {self.user.username} for {self.Car.name}"
+  
