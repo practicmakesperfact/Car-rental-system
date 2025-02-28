@@ -1,0 +1,42 @@
+{% extends 'rental/base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4" data-aos="fade-up">
+    <h1 class="text-4xl font-bold mb-8">About HA Car Rental</h1>
+    <div class="grid md:grid-cols-2 gap-8">
+        <div class="prose lg:prose-xl">
+            <p class="text-lg">HA Car Rental is Ethiopia's premier car rental service, providing reliable and luxurious vehicles for all your transportation needs.</p>
+            <h2 class="text-2xl font-semibold mt-6">Our Mission</h2>
+            <p>To provide exceptional car rental services with a focus on customer satisfaction, safety, and convenience.</p>
+            <h2 class="text-2xl font-semibold mt-6">Our Values</h2>
+            <ul class="list-disc pl-5 mt-4">
+                <li>Customer First</li>
+                <li>Quality Service</li>
+                <li>Safety Priority</li>
+                <li>Transparency</li>
+            </ul>
+        </div>
+        <div class="bg-blue-50 p-8 rounded-lg">
+            <h2 class="text-2xl font-semibold mb-4">Why Choose Us?</h2>
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <div class="bg-blue-500 p-2 rounded-full text-white mr-4">✓</div>
+                    <p>24/7 Customer Support</p>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-500 p-2 rounded-full text-white mr-4">✓</div>
+                    <p>Well-maintained Fleet</p>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-500 p-2 rounded-full text-white mr-4">✓</div>
+                    <p>Competitive Pricing</p>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-500 p-2 rounded-full text-white mr-4">✓</div>
+                    <p>Flexible Rental Options</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -53,3 +53,13 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'rental/register.html', {'form': form})
+
+def about(request):
+    return render(request, 'rental/about.html')
+
+def available_cars(request):
+    cars = Car.objects.filter(is_available=True)
+    return render(request, 'rental/available_cars.html', {'cars': cars})
+
+def locations(request):
+    return render(request, 'rental/locations.html')

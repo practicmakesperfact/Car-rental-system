@@ -1,0 +1,35 @@
+{% extends 'rental/base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4" data-aos="fade-up">
+    <h1 class="text-4xl font-bold mb-8">Our Locations</h1>
+    <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold mb-4">Addis Ababa Branches</h2>
+            <div class="space-y-4">
+                <div class="border-b pb-4">
+                    <h3 class="font-semibold">Bole Branch</h3>
+                    <p>Address: Bole Road, Next to Bole Medhanialem</p>
+                    <p>Phone: +251 906287552</p>
+                </div>
+                <div class="border-b pb-4">
+                    <h3 class="font-semibold">Piassa Branch</h3>
+                    <p>Address: Piassa, Near National Theater</p>
+                    <p>Phone: +251 906287552</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold mb-4">Airport Services</h2>
+            <p class="mb-4">We offer convenient pickup and drop-off services at:</p>
+            <div class="space-y-4">
+                <div class="border-b pb-4">
+                    <h3 class="font-semibold">Bole International Airport</h3>
+                    <p>24/7 Service Available</p>
+                    <p>Advance booking required</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
