@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from .models import Car, Rental
+from .models import Car, Booking, CustomProfile
 from datetime import datetime
 from decimal import Decimal
+from .utils import update_car_location,apply_loyalty_discount
 
 # Create your views here.
 
@@ -25,7 +26,7 @@ def book_car(request, car_id):
         days = (end_date - start_date).days + 1
         total_price = car.price_per_day * Decimal(days)
         
-        rental = Rental.objects.create(
+        booking = Booking.objects.create(
             user=request.user,
             car=car,
             start_date=start_date,
@@ -40,9 +41,35 @@ def book_car(request, car_id):
 
 @login_required
 def rental_history(request):
-    rentals = Rental.objects.filter(user=request.user).order_by('-created_at')
+    rentals = Booking.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'rental/rental_history.html', {'rentals': rentals})
 
+
+
+def track_car(request,car_id):
+    """
+    calls the utility functions to fetch GPS  data and display car location.
+    """
+    success = update_car_location(car_id)
+    car = Car.objects.get(id=car_id)
+    return render(request, 'track_car.html',{'car':car, 'success':success})
+    
+    
+    
+def confirm_booking(request,booking_id):
+    """confirms a booking and applies a loyalty discount if available"""
+    booking = Booking.objects.get(id=booking_id)
+    if request.method =='POST':
+        total_price = apply_loyalty_discount(request.user,booking.total_price)
+        booking.status = 'Confirmed'
+        booking.save()
+        return redirect('booking_success')
+    return render(request,'confirm_booking.html',{'booking':booking})
+
+    
+        
+    
+    
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

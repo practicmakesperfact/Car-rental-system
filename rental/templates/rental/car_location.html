@@ -1,0 +1,18 @@
+extends 'rental/base.html'
+{% block title %} Car location{% endblock title %}
+
+
+{% block content %}
+  <h2>Car location:{{ car.name }}</h2>
+  <div id="map" style="height: 400px;width: 100%;"></div>
+{% endblock content %}
+ <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+ <script>
+    function initMap() {
+        let carLocation = { lat: {{ car.latitude }}, lng: {{ car.longitude }} };
+        let map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,center:carLocation});
+        new google.maps.Marker({ position:carLocation,map:map });
+    }
+    window.onload = initMap;
+ </script>
