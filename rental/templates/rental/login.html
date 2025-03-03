@@ -8,13 +8,13 @@
         {% csrf_token %}
         <div>
             <label for="id_username" class="block text-sm font-medium text-gray-700">Username</label>
-            <input type="text" name="username" id="id_username" required
+            <input type="text" class="border p-1 outline-none w-full" name="username" id="id_username" required
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
         </div>
         
         <div>
             <label for="id_password" class="block text-sm font-medium text-gray-700">Password</label>
-            <input type="password" name="password" id="id_password" required
+            <input type="password" class="border p-1 outline-none w-full"  name="password" id="id_password" required
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
         </div>
 
@@ -32,7 +32,7 @@
 
     <p class="mt-4 text-center text-gray-600">
         Don't have an account? 
-        <a href="{% url 'register' %}" class="text-blue-600 hover:underline">Register here</a>
+        <a href="{% url 'register' %}" class="text-blue-600 hover:underline">SignUp</a>
     </p>
 </div>
 {% endblock %}

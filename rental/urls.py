@@ -13,4 +13,9 @@ urlpatterns = [
 #     path('reviews/', views.reviews_list, name='reviews_list'),
 #     path('location/', views.location_list, name='location_list'),
 #     path('payment/', views.payment, name='payment'),
+
+# authentications urls
+    path('register/', views.register, name='register'),
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
 ]

@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, authenticate,logout
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from .models import Car, Booking, CustomProfile
@@ -72,14 +74,29 @@ def confirm_booking(request,booking_id):
     
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Account created successfully! You can now login.')
-            return redirect('login')
-    else:
-        form = UserCreationForm()
-    return render(request, 'rental/register.html', {'form': form})
+       username = request.POST['username']
+       email = request.POST['email']
+       password = request.POST['password']
+       user = User.objects.create_user(username=username, email=email, password=password)
+       user.save()
+       messages.success(request, 'Account created successfully! You can now login.')
+       return redirect('login')
+        
+    return render(request, 'rental/register.html')
+def user_login(request):
+    if request.method=='POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid username or password.')
+    return render(request, 'rental/login.html')
+def user_logout(request):
+    logout(request)
+    return redirect('home')
 
 def about(request):
     return render(request, 'rental/about.html')
