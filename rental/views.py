@@ -15,10 +15,6 @@ def home(request):
     cars = Car.objects.filter(is_available=True)
     return render(request, 'rental/home.html', {'cars': cars})
 
-def car_detail(request, car_id):
-    car = get_object_or_404(Car, id=car_id)
-    return render(request, 'rental/car_detail.html', {'car': car})
-
 @login_required
 def book_car(request, car_id):
     car = get_object_or_404(Car, id=car_id)
@@ -101,9 +97,23 @@ def user_logout(request):
 def about(request):
     return render(request, 'rental/about.html')
 
-def available_cars(request):
+def car_list(request):
+    """
+    Displays a list of available cars with filtering options.
+    """
     cars = Car.objects.filter(is_available=True)
-    return render(request, 'rental/available_cars.html', {'cars': cars})
+    search_query = request.GET.get('search', '')
+    if search_query:
+        cars = cars.filter(make__icontains=search_query)
+    return render(request, 'rental/car_list.html', {'cars': cars, 'search_query': search_query})
+
+
+def car_detail(request, car_id):
+    """
+    displays a ditail information about a spacific car
+    """
+    car = get_object_or_404(Car, id=car_id)
+    return render(request, 'rental/car_detail.html', {'car': car})
 
 def locations(request):
     return render(request, 'rental/locations.html')
