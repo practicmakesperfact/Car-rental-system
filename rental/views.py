@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from .models import Car, Booking, CustomProfile
+from .forms import BookingForm, ReviewForm
 from datetime import datetime
 from decimal import Decimal
 from .utils import update_car_location,apply_loyalty_discount
@@ -17,6 +18,7 @@ def home(request):
 
 @login_required
 def book_car(request, car_id):
+    """handles booking car"""
     car = get_object_or_404(Car, id=car_id)
     if request.method == 'POST':
         start_date = datetime.strptime(request.POST['start_date'], '%Y-%m-%d').date()

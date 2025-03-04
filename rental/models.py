@@ -43,7 +43,16 @@ class Booking(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     loyality_points_earned =models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    
+    def save(self, *args, **kwargs):
+        """ 
+        calculate total price before saving the booking
+        
+        """
+        if self.start_date and self.end_date:
+            days =(self.end_date - self.start_date).days
+            self.total_price = days *self.car.price_per_day
+            super().save(*args, **kwargs)
     def __str__(self):
         return f"{self.user.username} - {self.car.name} ({self.start_date} to {self.end_date})"
 
