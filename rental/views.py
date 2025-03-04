@@ -99,12 +99,12 @@ def about(request):
 
 def car_list(request):
     """
-    Displays a list of available cars with filtering options.
+    Displays a list of available cars with search functionality.
     """
     cars = Car.objects.filter(is_available=True)
-    search_query = request.GET.get('search', '')
+    search_query = request.GET.get('search', '').strip()
     if search_query:
-        cars = cars.filter(make__icontains=search_query)
+        cars = cars.filter(name__icontains=search_query)
     return render(request, 'rental/car_list.html', {'cars': cars, 'search_query': search_query})
 
 

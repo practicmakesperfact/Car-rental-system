@@ -60,9 +60,16 @@
                         <span>Ethio Car Rental</span>
                     </a>
                     <!-- Search Bar -->
-                    <div class="search-container" data-aos="fade-right">
-                        <input type="search" placeholder="Search cars, locations..." class="search-input text-gray-800 p-1 outline-none rounded-lg">
-                    </div>
+                     <form method=" GET" action="{% url 'car_list' %}" class="flex">
+                        <div class="btn-container flex items-center bg-white rounded-lg shadow-md">
+                            <input type="text" name="search" placeholder="Search cars, locations..."
+                            class="search-input text-gray-800 p-1 outline-none rounded-lg"
+                            value="{{ request.GET.search }}" />
+                            <button type="submit" class="bg-gray-500 text-white px-4 py-1  hover:bg-gray-600">
+                                Search
+                            </button>
+                        </div>
+                    </form> 
                 </div>
                 
                 <!-- Main Navigation -->
