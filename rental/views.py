@@ -4,7 +4,7 @@ from django.contrib.auth import login, authenticate,logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from .models import Car, Booking, CustomProfile
+from .models import Car, Booking, CustomProfile, Reward
 from .forms import BookingForm, ReviewForm
 from datetime import datetime
 from decimal import Decimal
@@ -67,6 +67,21 @@ def confirm_booking(request,booking_id):
     return render(request,'confirm_booking.html',{'booking':booking})
 
     
+@login_required
+def user_rewards(request):
+    """displays the logged user's reward points"""
+    reward,created = Reward.objects.get_or_create(user=request.user)
+    return render(request,"rental/user_rewards.html",{'reward':reward})    
+
+@login_required
+def redeem_rewards(request):
+    """aloow users to redeem reward points for a booking discount."""
+    reward, created = Reward.objects.get_or_create(user=request.user)
+    if reward.redeem_points(100):
+        messages.success(request, "🎉 100 points redeemed! you get a $10 discount on your next booking.")
+    else:
+        messages.error(request, "You don't have enough points to redeem.")
+    return redirect('user_rewards')
         
     
     

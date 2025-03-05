@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 
@@ -46,16 +47,20 @@ class Booking(models.Model):
     
     def save(self, *args, **kwargs):
         """ 
-        calculate total price before saving the booking
+        calculate total price and loyalty points before saving the booking
         
         """
         if self.start_date and self.end_date:
             days =(self.end_date - self.start_date).days
             self.total_price = days *self.car.price_per_day
+            # calculate loyalty points (1 per $100 spent)
+            self.loyality_points_earned = int(self.total_price // 100)
             super().save(*args, **kwargs)
+               
     def __str__(self):
         return f"{self.user.username} - {self.car.name} ({self.start_date} to {self.end_date})"
-
+    
+    
 
 class CustomProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -96,9 +101,26 @@ class Review(models.Model):
         return f"Review by {self.user.username} for {self.car.name}"
   
 class Reward(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    points = models.IntegerField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    points = models.PositiveIntegerField(default=0)
     
     def __str__(self):
         return f"{self.user.username} - {self.points} points"
+    
+    def add_points(self, amount):
+        """
+        add reward point to user.
+        """
+        self.points += amount
+        self.save()
+        
+    def redeem_points(self,amount):
+            """
+            Redeem reward points if user has enough.
+            """
+            if self.points >=amount:
+                self.points -=amount
+                self.save()
+                return True
+            return False
     

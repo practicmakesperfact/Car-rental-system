@@ -8,8 +8,9 @@ urlpatterns = [
     path('car/<int:car_id>/book/', views.book_car, name='book_car'),
     path('rental-history/', views.rental_history, name='rental_history'),
     path('about/', views.about, name='about'),
-   
     path('locations/', views.locations, name='locations'),
+    path('rewards/', views.user_rewards, name='user_rewards'),
+    path('rewards/redeem/', views.redeem_rewards,name='redeem_rewards'),
 #     path('profile/', views.profile, name='profile'),
 #     path('reviews/', views.reviews_list, name='reviews_list'),
 #     path('location/', views.location_list, name='location_list'),

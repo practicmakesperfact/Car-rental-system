@@ -1,0 +1,19 @@
+{% extends 'rental/base.html' %}
+
+{% block content %}
+    <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md text-center">
+        <h2 class="text-2xl font-bold">Loyalty Rewards</h2>
+        <p class="text-gray-600 mt-2">Your current reward points:</p>
+        <span class="text-blue-600 text-4xl font-bold">{{ reward.points }}</span>
+        
+         {% if reward.points|add:0 >= 100 %}
+        <p class="text-green-600 mt-4"> You have enough points to redeem for a discount!</p>
+        <a href="{% url 'redeem_rewards' %}"
+        class="btn-primary mt-4 inline-block px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+        Redeem Points</a>
+        {% else %}
+        <p class="text-gray-500 mt-4">Earn more points to unlock rewards!</p>
+        {% endif %} 
+    </div>
+
+{% endblock content %}
