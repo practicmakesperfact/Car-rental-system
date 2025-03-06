@@ -75,12 +75,13 @@ def user_rewards(request):
 
 @login_required
 def redeem_rewards(request):
-    """aloow users to redeem reward points for a booking discount."""
+    """allow users to redeem reward points for a booking discount for next booking."""
     reward, created = Reward.objects.get_or_create(user=request.user)
-    if reward.redeem_points(100):
-        messages.success(request, "🎉 100 points redeemed! you get a $10 discount on your next booking.")
+    discount =  reward.redeem_points()
+    if discount > 0:
+        messages.success(request,  f"You redeemed points a ${discount} discount on your next booking.")
     else:
-        messages.error(request, "You don't have enough points to redeem.")
+        messages.error(request, "You don't have enough points to redeem. you need at least 100 points.")
     return redirect('user_rewards')
         
     

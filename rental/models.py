@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
 from django.utils import timezone
+
 
 # Create your models here.
 
@@ -47,12 +49,15 @@ class Booking(models.Model):
     
     def save(self, *args, **kwargs):
         """ 
-        calculate total price and loyalty points before saving the booking
-        
+        calculate total price, available discount and loyalty points before saving the booking
         """
         if self.start_date and self.end_date:
             days =(self.end_date - self.start_date).days
             self.total_price = days *self.car.price_per_day
+            #apply discount if available in the rewards model 
+            reward, created = Reward.objects.get_or_create(user=self.user)
+            discount =reward.use_discount()
+            self.total_price = max(0,self.total_price - discount)
             # calculate loyalty points (1 per $100 spent)
             self.loyality_points_earned = int(self.total_price // 100)
             super().save(*args, **kwargs)
@@ -103,9 +108,11 @@ class Review(models.Model):
 class Reward(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     points = models.PositiveIntegerField(default=0)
+    discount_available = models.DecimalField(max_digits=6,decimal_places=2,default=0.00)
     
     def __str__(self):
-        return f"{self.user.username} - {self.points} points"
+        return f"{self.user.username} - {self.points} points,Discount: ${self.discount_available}"
+    
     
     def add_points(self, amount):
         """
@@ -114,13 +121,23 @@ class Reward(models.Model):
         self.points += amount
         self.save()
         
-    def redeem_points(self,amount):
+    def redeem_points(self):
             """
             Redeem reward points if user has enough.
             """
-            if self.points >=amount:
-                self.points -=amount
-                self.save()
-                return True
-            return False
+            if self.points <100:
+                return 0
+            redeemable_points =(self.points // 100) * 100
+            discount = (redeemable_points//100)* 10
+            self.points -= redeemable_points
+            self.discount_available += discount
+            self.save()
+            return discount
+        
+    def use_discount(self):
+        """use available discouunt for the next booking"""
+        discount =self.discount_available
+        self.discount_available = 0
+        self.save()
+        return discount
     
