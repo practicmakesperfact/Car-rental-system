@@ -25,6 +25,11 @@ class Car(models.Model):
     description = models.TextField()
     latitude = models.FloatField( null=True, blank=True)  
     longitude = models.FloatField( null=True, blank=True)
+    
+    def update_rating(self):
+        """update the cars average rating."""
+        self.rating = Review.calculate_average_rating(self)
+        self.save()
 
 
     def __str__(self):
@@ -96,14 +101,25 @@ class Location(models.Model):
 
     
 class Review(models.Model):
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE,related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.IntegerField()
+    rating = models.FloatField()
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     
+    class Meta:
+        unique_together = ('car', 'user')
+    
     def __str__(self):
         return f"Review by {self.user.username} for {self.car.name}"
+    
+    @staticmethod
+    def calculate_average_rating(car):
+        """ calculate avareage rating for car """
+        reviews = Review.objects.filter(car=car)
+        if reviews.exists():
+              return round(reviews.aggregate(models.Avg('rating'))['rating__avg'],1)
+        return 0.0
   
 class Reward(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

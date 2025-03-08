@@ -11,6 +11,8 @@ urlpatterns = [
     path('locations/', views.locations, name='locations'),
     path('rewards/', views.user_rewards, name='user_rewards'),
     path('rewards/redeem/', views.redeem_rewards,name='redeem_rewards'),
+    path('cars/<int:car_id>/add_review/', views.add_review, name='add_review'),
+
 #     path('profile/', views.profile, name='profile'),
 #     path('reviews/', views.reviews_list, name='reviews_list'),
 #     path('location/', views.location_list, name='location_list'),

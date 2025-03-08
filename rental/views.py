@@ -40,6 +40,37 @@ def book_car(request, car_id):
     return render(request, 'rental/book_car.html', {'car': car})
 
 @login_required
+
+def add_review(request,car_id):
+    """
+    allow users to add  a review for a car they have rented 
+    """
+    car = get_object_or_404(Car,id=car_id)
+    
+    #ensure user has booked this car before reviewing
+    has_rented = Booking.objects.filter(user = request.user, car=car, status= 'Completed').exists()
+    
+      
+    if not has_rented:
+        messages.error(request, 'You must rent this car before you can review it.')
+        return redirect('rental_history')
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.car = car
+            review.save()
+            car.update_rating()
+            messages.success(request, 'Review submitted successfully!')
+            return redirect('car_detail', car_id=car.id)
+        else:
+            print('Invalid form, re-rendering page')
+      # return the review from if get request
+    form = ReviewForm()
+    return render(request, 'rental/add_review.html', {'form': form, 'car': car})
+        
+@login_required
 def rental_history(request):
     rentals = Booking.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'rental/rental_history.html', {'rentals': rentals})
@@ -131,6 +162,9 @@ def car_detail(request, car_id):
     displays a ditail information about a spacific car
     """
     car = get_object_or_404(Car, id=car_id)
+    # provide a default image if none is uploaded 
+    if not car.image:
+        car.image = 'images/default_car_image.jpg'
     return render(request, 'rental/car_detail.html', {'car': car})
 
 def locations(request):

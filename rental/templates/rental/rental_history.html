@@ -48,8 +48,16 @@
                             </svg>
                             {{ rental.created_at|date:"M d, Y" }}
                         </p>
+
+                        {% if rental.status == "Completed" %}
+                            <a href="{% url 'add_review' rental.car.id %}"
+                            class="btn-primary px-4 py-2 mt-2 inline-block text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                                Write Review
+                            </a>
+                       {% endif %}
                     </div>
                 </div>
+              
             </div>
         </div>
         {% empty %}
