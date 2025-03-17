@@ -1,0 +1,15 @@
+{% extends "rental/base.html" %}
+
+<h2>Available Cars for {{ category }}</h2>
+<ul>
+    {% for car in cars %}
+    <li>
+        <h3>{{ car.name }} - {{ car.model }}</h3>
+        <p>Seats: {{ car.seats }}, Transmission: {{ car.transmission }}</p>
+         <P>GPS: {% if car.gps_tracking%}Yes{% else %}No {% endif %}, Year: {{ car.model_year }}</P>
+         <a href="{% url 'rent_car' car.id %}">Rent Now</a>
+    </li> 
+    {% empty %}
+    <p>No cars available for this category</p>
+    {% endfor %}
+</ul>

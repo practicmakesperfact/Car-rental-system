@@ -11,6 +11,14 @@ class Car(models.Model):
         ('A', 'Automatic'),
         ('M', 'Manual'),
     ]
+    
+    CATEGORY_CHOICES = [
+        ('tour_pakege', 'Tour Package'),
+        ('airport_transfer', 'Airport Transfer'),
+        ('widding_car', 'Widding Car'),
+        ('corporate_rentals', 'Corporate Rentals'),
+    ]
+    
     Location =models.ForeignKey('Location', on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=50)
@@ -25,6 +33,7 @@ class Car(models.Model):
     description = models.TextField()
     latitude = models.FloatField( null=True, blank=True)  
     longitude = models.FloatField( null=True, blank=True)
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
     
     def update_rating(self):
         """update the cars average rating."""
@@ -127,7 +136,7 @@ class Reward(models.Model):
     discount_available = models.DecimalField(max_digits=6,decimal_places=2,default=0.00)
     
     def __str__(self):
-        return f"{self.user.username} - {self.points} points,Discount: ${self.discount_available}"
+        return f"{self.user.username} - {self.points} points,Discount: ETB{self.discount_available}"
     
     
     def add_points(self, amount):

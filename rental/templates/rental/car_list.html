@@ -13,7 +13,7 @@
                 <h2 class="text-xl font-semibold">{{ car.name }}</h2>
                 <p class="text-gray-600">{{ car.description | truncatewords:20 }}</p>
                 <div class="mt-4 flex justify-between items-center">
-                    <span class="text-blue-600 font-bold">${{ car.price_per_day }}/day</span>
+                    <span class="text-blue-600 font-bold">ETB {{ car.price_per_day }}/day</span>
                     <a href="{% url 'car_detail' car.id %}" class="btn-primary">View Details</a>
                 </div>
             </div>

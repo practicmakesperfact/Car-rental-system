@@ -16,6 +16,15 @@ def home(request):
     cars = Car.objects.filter(is_available=True)
     return render(request, 'rental/home.html', {'cars': cars})
 
+
+def rental_list(request, category):
+    """
+    display list of cars in a specific category
+    """
+    cars= Car.objects.filter(category=category, is_available=True)
+    return render(request, 'rental/rental_list.html', {'cars': cars, 'category': category})
+
+
 @login_required
 def book_car(request, car_id):
     """handles booking car"""
