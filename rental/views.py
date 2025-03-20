@@ -40,11 +40,12 @@ def rental_list(request, category):
     CATEGORY_MAP = {
         'tour-package': 'tour-package',
         'airport-transfer': 'airport-transfer',
-        'wedding-cars': 'wedding_cars',  
+        'wedding-cars': 'wedding-cars',  
         'corporate-rentals': 'corporate-rentals',
     }
     mapped_category = CATEGORY_MAP.get(category,category)
     cars= Car.objects.filter(category=mapped_category, is_available=True)
+    print(f"DEBUG: Category - {category}, Cars found - {cars.count()}") 
     return render(request, 'rental/rental_list.html', {'cars': cars, 'category': category})
 
 

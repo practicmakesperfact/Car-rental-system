@@ -85,10 +85,10 @@
                         <button class="side-nav-link">Services ▼</button>
                         <div class="absolute left-0 dropdown-menu">
                             <a href="{% url 'services' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50"> All Services</a>
-                             <a href="{% url 'rental_list' 'tour-package' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Tour Packages</a>
-                            <a href="{% url 'rental_list' 'airport_transfer' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Airport Transfer</a>
-                            <a href="{% url 'rental_list' 'wedding_cars' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Wedding Cars</a>
-                            <a href="{% url 'rental_list' 'corporate_rentals' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Corporate Rental</a>
+                             <a href="{% url 'rental_list' category='tour-package' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Tour Packages</a>
+                            <a href="{% url 'rental_list' category='airport-transfer' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Airport Transfer</a>
+                            <a href="{% url 'rental_list' category='wedding-cars' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Wedding Cars</a>
+                            <a href="{% url 'rental_list' category='corporate-rentals' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Corporate Rental</a>
                         </div>
                     </div>
                     

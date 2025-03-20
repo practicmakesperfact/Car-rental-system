@@ -17,7 +17,7 @@
             </div>
             
             <div class="p-8" data-aos="fade-left">
-                <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ car.brand }} {{ car.name }}</h1>
+                <h1 class="text-4xl font-bold text-gray-800 mb-4"> {{ car.name }}</h1>
                 <div class="bg-blue-50 rounded-lg p-4 mb-6">
                     <p class="text-gray-700 text-lg leading-relaxed">{{ car.description }}</p>
                 </div>
@@ -30,11 +30,18 @@
                             </svg> 
                             <span class="text-lg"> {{ car.model_year }}</span>
                         </div>
+                      
                         <div class="flex items-center text-gray-700">
                              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-5 5-5-5" />
                             </svg> 
                             <span class="text-lg">{{ car.get_transmission_display }}</span>
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-5 5-5-5" />
+                            </svg> 
+                            <span class="text-lg">{{ car.brand }}</span>
                         </div>
                     </div>
                     <div class="space-y-4">
