@@ -13,15 +13,38 @@ from .utils import update_car_location,apply_loyalty_discount
 # Create your views here.
 
 def home(request):
-    cars = Car.objects.filter(is_available=True)
-    return render(request, 'rental/home.html', {'cars': cars})
+    # get 10 featured products in the home page
+    featured_cars = Car.objects.filter(is_available = True).order_by('-id')[:9]
+    
+    #featch cars by category for services 
+    tour_cars = Car.objects.filter(category='tour-package', is_available=True)[:5]
+    airport_cars = Car.objects.filter(category='airport-transfer', is_available=True)[:5]
+    wedding_cars = Car.objects.filter(category='wedding_cars', is_available=True)[:5]  
+    corporate_cars = Car.objects.filter(category='corporate-rentals', is_available=True)[:5]
+    context = {
+        'featured_cars': featured_cars,
+        'tour_cars': tour_cars,
+        'airport_cars': airport_cars,
+        'wedding_cars': wedding_cars,
+        'corporate_cars': corporate_cars,
+    
+    }
+    return render(request, 'rental/home.html',context)
 
-
+def services(request):
+    return render(request,'rental/services.html')
 def rental_list(request, category):
     """
     display list of cars in a specific category
     """
-    cars= Car.objects.filter(category=category, is_available=True)
+    CATEGORY_MAP = {
+        'tour-package': 'tour-package',
+        'airport-transfer': 'airport-transfer',
+        'wedding-cars': 'wedding_cars',  
+        'corporate-rentals': 'corporate-rentals',
+    }
+    mapped_category = CATEGORY_MAP.get(category,category)
+    cars= Car.objects.filter(category=mapped_category, is_available=True)
     return render(request, 'rental/rental_list.html', {'cars': cars, 'category': category})
 
 
@@ -94,8 +117,7 @@ def track_car(request,car_id):
     car = Car.objects.get(id=car_id)
     return render(request, 'track_car.html',{'car':car, 'success':success})
     
-    
-    
+
 def confirm_booking(request,booking_id):
     """confirms a booking and applies a loyalty discount if available"""
     booking = Booking.objects.get(id=booking_id)
@@ -124,17 +146,15 @@ def redeem_rewards(request):
         messages.error(request, "You don't have enough points to redeem. you need at least 100 points.")
     return redirect('user_rewards')
         
-    
-    
 def register(request):
     if request.method == 'POST':
-       username = request.POST['username']
-       email = request.POST['email']
-       password = request.POST['password']
-       user = User.objects.create_user(username=username, email=email, password=password)
-       user.save()
-       messages.success(request, 'Account created successfully! You can now login.')
-       return redirect('login')
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.save()
+        messages.success(request, 'Account created successfully! You can now login.')
+        return redirect('login')
         
     return render(request, 'rental/register.html')
 def user_login(request):

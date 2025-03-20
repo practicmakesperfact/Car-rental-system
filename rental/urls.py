@@ -13,11 +13,12 @@ urlpatterns = [
     path('rewards/redeem/', views.redeem_rewards,name='redeem_rewards'),
     path('cars/<int:car_id>/add_review/', views.add_review, name='add_review'),
     path('rentals/<str:category>/', views.rental_list, name='rental_list'),
+    path("services/", views.services, name="services"),
 #     path('profile/', views.profile, name='profile'),
 #     path('reviews/', views.reviews_list, name='reviews_list'),
 #     path('location/', views.location_list, name='location_list'),
 #     path('payment/', views.payment, name='payment'),
-
+  
 # authentications urls
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),

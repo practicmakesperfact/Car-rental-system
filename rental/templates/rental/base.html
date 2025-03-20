@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ethio Car Rental</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <style>
@@ -83,6 +84,7 @@
                     <div class="relative group inline-block">
                         <button class="side-nav-link">Services ▼</button>
                         <div class="absolute left-0 dropdown-menu">
+                            <a href="{% url 'services' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50"> All Services</a>
                              <a href="{% url 'rental_list' 'tour-package' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Tour Packages</a>
                             <a href="{% url 'rental_list' 'airport_transfer' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Airport Transfer</a>
                             <a href="{% url 'rental_list' 'wedding_cars' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Wedding Cars</a>

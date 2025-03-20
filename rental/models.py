@@ -13,10 +13,10 @@ class Car(models.Model):
     ]
     
     CATEGORY_CHOICES = [
-        ('tour_pakege', 'Tour Package'),
-        ('airport_transfer', 'Airport Transfer'),
-        ('widding_car', 'Widding Car'),
-        ('corporate_rentals', 'Corporate Rentals'),
+        ('tour-package', 'Tour Package'),
+        ('airport-transfer', 'Airport Transfer'),
+        ('wedding-cars', 'Wedding Cars'),
+        ('corporate-rentals', 'Corporate Rentals'),
     ]
     
     Location =models.ForeignKey('Location', on_delete=models.SET_NULL, null=True, blank=True)
@@ -26,23 +26,25 @@ class Car(models.Model):
     transmission = models.CharField(max_length=1, choices=TRANSMISSION_CHOICES)
     seats = models.IntegerField()
     price_per_day = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.ImageField(upload_to='cars/')
+    image = models.ImageField(upload_to='cars/', blank=True, null=True)
     is_available = models.BooleanField(default=True)
     rating = models.FloatField(default=0.0)
     gps_tracking = models.BooleanField(default=False)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     latitude = models.FloatField( null=True, blank=True)  
     longitude = models.FloatField( null=True, blank=True)
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='tour-package')
     
     def update_rating(self):
         """update the cars average rating."""
         self.rating = Review.calculate_average_rating(self)
         self.save()
-
-
+    
+    def get_category_display_name(self):
+        """return the human readable name for the category"""
+        return dict(self.CATEGORY_CHOICES).get(self.category, self.category)
     def __str__(self):
-        return f"{self.brand} {self.name} ({self.model_year})"
+        return f"{self.brand} {self.name} ({self.model_year})-{self.get_category_display_name()}"
 
 class Booking(models.Model):
     STATUS_CHOICES = [
@@ -59,7 +61,7 @@ class Booking(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     loyality_points_earned =models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)   
     
     def save(self, *args, **kwargs):
         """ 
@@ -78,9 +80,6 @@ class Booking(models.Model):
                
     def __str__(self):
         return f"{self.user.username} - {self.car.name} ({self.start_date} to {self.end_date})"
-    
-    
-
 class CustomProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15)

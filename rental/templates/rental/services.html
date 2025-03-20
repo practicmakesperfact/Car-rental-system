@@ -1,0 +1,37 @@
+{% extends "rental/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4" data-aos="fade-up">
+    <h1 class="text-4xl font-bold mb-8 text-center">Our Rental Services</h1>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+        <!-- Tour Packages -->
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-2">Tour Packages</h2>
+            <p class="text-gray-600">Explore Ethiopia with our comfortable tour rental cars.</p>
+            <a href="{% url 'rental_list' category='tour-package' %}" class="block mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg text-center hover:bg-blue-700">View Cars</a>
+        </div>
+
+        <!-- Airport Transfers -->
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-2">Airport Transfers</h2>
+            <p class="text-gray-600">Enjoy smooth and reliable airport transfers with us.</p>
+            <a href="{% url 'rental_list' category='airport-transfer' %}" class="block mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg text-center hover:bg-blue-700">View Cars</a>
+        </div>
+
+        <!-- Wedding Cars -->
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-2">Wedding Cars</h2>
+            <p class="text-gray-600">Make your special day memorable with luxury wedding cars.</p>
+            <a href="{% url 'rental_list' category='wedding-cars' %}" class="block mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg text-center hover:bg-blue-700">View Cars</a>
+        </div>
+
+        <!-- Corporate Rentals -->
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-2">Corporate Rentals</h2>
+            <p class="text-gray-600">Reliable corporate rental solutions for businesses.</p>
+            <a href="{% url 'rental_list' category='corporate-rentals' %}" class="block mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg text-center hover:bg-blue-700">View Cars</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
