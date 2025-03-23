@@ -1,7 +1,7 @@
 {% extends 'rental/base.html' %}
 
 {% block content %}
-<div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+{% comment %} <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
     <h2 class="text-2xl font-bold mb-6 text-center">SignUp</h2>
     
     <form method="POST" class="space-y-6 w-100 h-100">
@@ -18,5 +18,32 @@
         Already have an account? 
         <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login</a>
     </p>
-</div>
+</div> {% endcomment %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <label>Username</label>
+    {{ form.username }}
+
+    <label>Email</label>
+    {{ form.email }}
+
+    <label>Password</label>
+    {{ form.password }}
+
+    <label>Phone Number</label>
+    {{ form.phone_number }}
+
+    <label>Address</label>
+    {{ form.address }}
+
+    <label>Upload ID/Passport</label>
+    {{ form.id_passport }}
+
+    <label>Take a Live Selfie</label>
+    <input type="file" name="selfie_image" accept="image/*" capture="camera" required>
+
+    <button type="submit">Register</button>
+</form>
+
 {% endblock %}

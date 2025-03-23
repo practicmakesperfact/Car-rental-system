@@ -1,9 +1,39 @@
+import cv2
+import numpy as np
+import face_recognition
 import requests
 import logging
 from .models import Car, Booking,Reward
 
 logger = logging.getLogger(__name__)
 
+
+def compare_faces(id_image_path, selfie_image_path):
+    """
+    compare ID/passport with live selfie photo to verify identity 
+    return true if it matchs otherwise false
+    """
+    # load ID/passport image
+    id_image = face_recognition.load_image_file(id_image_path)
+    id_encoding = face_recognition.face_encodings(id_image)
+    
+    if len(id_encoding)==0:
+        logger.error("No face found in ID image")
+        return False
+    # load selfie image
+    selfie_image = face_recognition.load_image_file(selfie_image_path)
+    selfie_encoding = face_recognition.face_encodings(selfie_image)
+    if len(selfie_encoding)==0:
+        logger.error("No face found in selfie image")
+        return False
+    # compare faces
+    result = face_recognition.compare_faces([id_encoding[0]],selfie_encoding[0])
+    
+    return result[0]
+    
+    
+    
+    
 def update_car_location(car_id):
     """fetch the live location of a car from a GPS  tracking API and updates the database"""
     try: 

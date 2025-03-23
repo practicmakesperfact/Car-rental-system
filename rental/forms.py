@@ -1,5 +1,5 @@
 from django import forms
-from .models import Booking,Review
+from .models import Booking,Review, CustomProfile
 
 
 class BookingForm(forms.ModelForm):
@@ -10,7 +10,7 @@ class BookingForm(forms.ModelForm):
             'start_date': forms.DateInput(attrs={'type': 'date', 'class':'input-field'}),
             'end_date': forms.DateInput(attrs={'type': 'date','class':'input-field'}),
         }
-        
+          
 
 class ReviewForm(forms.ModelForm):
     class Meta:
@@ -30,4 +30,17 @@ class ReviewForm(forms.ModelForm):
                 'placeholder': 'Write your review here...'
             }),
         }
-   
+
+class RegistrationForm(forms.ModelForm):
+    username = forms.CharField(max_length=150, required=True)
+    email = forms.EmailField(required=True)
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+    phone_number = forms.CharField(max_length=15, required=True)
+    address = forms.CharField(max_length=200, required=True)
+    id_passport = forms.ImageField(required=True)
+    selfie_image = forms.ImageField(required=True) # webcam selfie upload
+    class Meta:
+        model = CustomProfile
+        fields = ['username', 'email', 'password', 'confirm_password', 'phone_number', 'address', 'id_passport', 'selfie_image']
+    

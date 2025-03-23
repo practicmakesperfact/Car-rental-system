@@ -84,8 +84,11 @@ class CustomProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15)
     address = models.CharField(max_length=200)
+    id_passport = models.ImageField(upload_to='user_id/',blank=False, null=False)
+    selfie_image = models.ImageField(upload_to='selfies/',blank=False, null=False)
+    is_verified = models.BooleanField(default=False)
     def __str__(self):
-        return self.user.username
+        return f"{self.user.username}-Verified:{self.is_verified}"
 
 class Payment(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE,null= True, blank=True)
