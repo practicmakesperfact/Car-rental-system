@@ -1,6 +1,4 @@
-import cv2
-import numpy as np
-import face_recognition
+
 import requests
 import logging
 from .models import Car, Booking,Reward

@@ -153,36 +153,14 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST,request.FILES)
         if form.is_valid():
-            #save user
-            user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                email=form.cleaned_data['email'],
-                password=form.cleaned_data['password1']
-                
-            )
-            # save custom profile
-            prifile = CustomProfile.objects.create(
-                user=user,
-                phone_number = form.cleaned_data['phone_number'],
-                address = form.cleaned_data['address'],
-                is_passport = form.cleaned_data['id_passport'],
-                selfie_image = form.cleaned_data['selfie_image']
-                
-            )
-            # perform face recognition
-            id_image_path =profile.id_passport.path
-            selfie_image_path = profile.selfie_image.path
-        
-        if compare_faces(id_image_path,selfie_image_path):
-            profile.is_verified = True
-            profile.save()
-            login(request,user)
-            messages.success(request, 'Registration successful ! Your ID has been verified.')
-            return redirect('home')
+           user = form.save()
+           login(request, user)
+           messages.success(request, 'Registration successful. Welcome!')
+           return redirect('home')
         else:
-            user.delete()
-            messages.error(request,'Registration is not acceptable due to image mismatch. please contact the contact center' )
+            messages.error(request, 'Registration failed. Please check your input.')
             return redirect('register')
+    
     else:
         form = RegistrationForm()
     return render(request, 'rental/register.html', {'form': form})

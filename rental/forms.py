@@ -1,5 +1,5 @@
 from django import forms
-from .models import Booking,Review, CustomProfile
+from .models import Booking,Review, CustomProfile ,User
 
 
 class BookingForm(forms.ModelForm):
@@ -38,9 +38,22 @@ class RegistrationForm(forms.ModelForm):
     confirm_password = forms.CharField(widget=forms.PasswordInput)
     phone_number = forms.CharField(max_length=15, required=True)
     address = forms.CharField(max_length=200, required=True)
-    id_passport = forms.ImageField(required=True)
-    selfie_image = forms.ImageField(required=True) # webcam selfie upload
+    id_front = forms.ImageField(required=True,label='Upload ID/passport front page')
+    id_back = forms.ImageField(required=True,label='Upload ID/passport back page')
     class Meta:
-        model = CustomProfile
-        fields = ['username', 'email', 'password', 'confirm_password', 'phone_number', 'address', 'id_passport', 'selfie_image']
+        model = User
+        fields = ['username', 'email', 'password']
     
+    def save(self,commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password'])
+        if commit:
+            user.save()
+            CustomProfile.objects.create(
+                user=user,
+                id_front=self.cleaned_data['id_front'],
+                id_back=self.cleaned_data['id_back'],
+                
+            )
+        return user
+        

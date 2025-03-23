@@ -21,29 +21,29 @@
 </div> {% endcomment %}
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    
-    <label>Username</label>
+    <label>Username:</label>
     {{ form.username }}
-
-    <label>Email</label>
+    
+    <label>Email:</label>
     {{ form.email }}
-
-    <label>Password</label>
+    
+    <label>Password:</label>
     {{ form.password }}
+    
+    <label>Upload ID/Passport (Front):</label>
+    {{ form.id_front }}
+    
+    <label>Upload ID/Passport (Back):</label>
+    {{ form.id_back }}
 
-    <label>Phone Number</label>
-    {{ form.phone_number }}
-
-    <label>Address</label>
-    {{ form.address }}
-
-    <label>Upload ID/Passport</label>
-    {{ form.id_passport }}
-
-    <label>Take a Live Selfie</label>
-    <input type="file" name="selfie_image" accept="image/*" capture="camera" required>
-
-    <button type="submit">Register</button>
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Register</button>
 </form>
+
+{% if messages %}
+  {% for message in messages %}
+    <p style="color: red;">{{ message }}</p>
+  {% endfor %}
+{% endif %}
+
 
 {% endblock %}
