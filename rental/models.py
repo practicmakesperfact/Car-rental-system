@@ -93,12 +93,12 @@ class Payment(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE,null= True, blank=True)
     amount = models.DecimalField(max_digits=50, decimal_places=2)
     payment_date = models.DateTimeField(auto_now_add=True)
-    payment_method = models.CharField(max_length=100)
-    transaction_id = models.CharField(max_length=100)
-    status = models.CharField(max_length=20,choices=[('Pending', 'Pending'), ('Completed', 'Completed')])
+    payment_method = models.CharField(max_length=100, choices=[('Chapa', 'Chapa')], default='Chapa')
+    transaction_id = models.CharField(max_length=100,unique=True, null=True, blank=True)
+    status = models.CharField(max_length=20,choices=[('Pending', 'Pending'), ('Completed', 'Completed')],default='Pending')
     
     def __str__(self):
-        return f"Payment for {self.booking}"
+        return f"Payment for {self.booking} - status: {self.status}"
     
 class Location(models.Model):
     name = models.CharField(max_length=100)

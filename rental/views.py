@@ -1,10 +1,11 @@
+import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate,logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from .models import Car, Booking, CustomProfile, Reward
+from .models import Car, Booking, CustomProfile, Reward,Payment
 from .forms import BookingForm, ReviewForm
 from datetime import datetime
 from decimal import Decimal
@@ -58,10 +59,17 @@ def book_car(request, car_id):
     if request.method == 'POST':
         start_date = datetime.strptime(request.POST['start_date'], '%Y-%m-%d').date()
         end_date = datetime.strptime(request.POST['end_date'], '%Y-%m-%d').date()
+        
+        #ensure valid dates selections
+        if start_date >=end_date:
+            return render(request,'rental/booking_car.html',{
+                'car':car,
+                'error_message': 'Invalid date selection. End date must be after start date.'
+            })
         days = (end_date - start_date).days + 1
         total_price = car.price_per_day * Decimal(days)
         
-        booking = Booking.objects.create(
+        Booking.objects.create(
             user=request.user,
             car=car,
             start_date=start_date,
@@ -72,7 +80,7 @@ def book_car(request, car_id):
         car.save()
         messages.success(request, 'Car booked successfully!')
         return redirect('rental_history')
-    return render(request, 'rental/book_car.html', {'car': car})
+    return render(request, 'rental/book_car.html', {'car': car,})
 
 @login_required
 
@@ -158,25 +166,13 @@ def register(request):
            messages.success(request, 'Registration successful. Welcome!')
            return redirect('home')
         else:
-            messages.error(request, 'Registration failed. Please check your input.')
-            return redirect('register')
+            messages.error(request, 'ID verfication failed. Please upload a valid ID/passport.')
+            # return redirect('register')
     
     else:
         form = RegistrationForm()
     return render(request, 'rental/register.html', {'form': form})
         
-        
-        
-        
-    #     username = request.POST['username']
-    #     email = request.POST['email']
-    #     password = request.POST['password']
-    #     user = User.objects.create_user(username=username, email=email, password=password)
-    #     user.save()
-    #     messages.success(request, 'Account created successfully! You can now login.')
-    #     return redirect('login')
-        
-    # return render(request, 'rental/register.html')
 def user_login(request):
     if request.method=='POST':
         username = request.POST['username']
@@ -223,3 +219,62 @@ def locations(request):
 def profile(request):
     profile = get_object_or_404(CustomProfile, user=request.user)
     return render(request, 'rental/profile.html', {'profile': profile})
+
+
+
+# Payment Processing
+CHAPA_API_KEY = "YOUR_API_KEY"
+CHAPA_BASE_URL = "https://api.chapa.co/v1/transaction/initialize"
+
+def process_payment(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    amount = booking.total_price
+
+    payload = {
+        'amount': str(amount),
+        'currency': 'ETB',
+        'email': request.user.email,
+        'tx_ref': request.user.email,
+        'callback_url': request.build_absolute_uri("/payment/verify/"),
+        'return_url': request.build_absolute_uri("/payment/success/"),
+        'customization': {
+            'title': 'Ethio Car Rental Payment',
+            'description': f'Payment for booking ID: {booking.id}',
+        }
+    }
+
+    headers = {'Authorization': f'Bearer {CHAPA_API_KEY}', 'Content-Type': 'application/json'}
+    response = requests.post(CHAPA_BASE_URL, json=payload, headers=headers)
+    response_data = response.json()
+
+    if response_data.get('status') == 'success':
+        return redirect(response_data['data']['checkout_url'])
+    
+    messages.error(request, 'Failed to process payment. Please try again.')
+    return redirect('rental_history')
+
+def verify_payment(request):
+    tx_ref = request.GET.get('tx_ref')
+    transaction_id = request.GET.get('transaction_id')
+
+    if not tx_ref or not transaction_id:
+        messages.error(request, 'Invalid payment verification request.')
+        return redirect('rental_history')
+
+    url = f"https://api.chapa.co/v1/transaction/verify/{transaction_id}"
+    headers = {'Authorization': f'Bearer {CHAPA_API_KEY}'}
+    response = requests.get(url, headers=headers)
+    data = response.json()
+
+    if data.get('status') == 'success':
+        payment = Payment.objects.filter(transaction_id=transaction_id).first()
+        if payment:
+            payment.status = 'completed'
+            payment.save()
+            messages.success(request, 'Payment successful! Your booking is confirmed.')
+            return redirect('rental_history')
+        messages.error(request, 'Payment verification failed.')
+    
+    return redirect('rental_history')
+
+
