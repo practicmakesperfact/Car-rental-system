@@ -52,6 +52,12 @@ class Booking(models.Model):
         ('Approved', 'Approved'),
         ('Rejected', 'Rejected'),
         ('Completed', 'Completed'),
+        ('Cancelled', 'Cancelled'),
+    ]
+    PAYMENT_STATUS_CHOICES =[
+        ('Unpaid', 'Unpaid'),
+        ('Paid', 'Paid'),
+        ('Failed', 'Failed'),
     ]
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -60,6 +66,7 @@ class Booking(models.Model):
     end_date = models.DateField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default='Unpaid')
     loyality_points_earned =models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)   
     
@@ -95,7 +102,7 @@ class Payment(models.Model):
     payment_date = models.DateTimeField(auto_now_add=True)
     payment_method = models.CharField(max_length=100, choices=[('Chapa', 'Chapa')], default='Chapa')
     transaction_id = models.CharField(max_length=100,unique=True, null=True, blank=True)
-    status = models.CharField(max_length=20,choices=[('Pending', 'Pending'), ('Completed', 'Completed')],default='Pending')
+    status = models.CharField(max_length=20,choices=[('Pending', 'Pending'), ('Completed', 'Completed'),('Failed', 'Failed')],default='Pending')
     
     def __str__(self):
         return f"Payment for {self.booking} - status: {self.status}"

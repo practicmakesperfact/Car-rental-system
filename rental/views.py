@@ -11,6 +11,10 @@ from datetime import datetime
 from decimal import Decimal
 from .utils import update_car_location,apply_loyalty_discount
 from .forms import RegistrationForm
+from django.conf import settings
+from django.http import HttpResponse
+import uuid
+
 
 
 # Create your views here.
@@ -116,6 +120,7 @@ def add_review(request,car_id):
 @login_required
 def rental_history(request):
     rentals = Booking.objects.filter(user=request.user).order_by('-created_at')
+    
     return render(request, 'rental/rental_history.html', {'rentals': rentals})
 
 
@@ -245,36 +250,110 @@ def process_payment(request, booking_id):
 
     headers = {'Authorization': f'Bearer {CHAPA_API_KEY}', 'Content-Type': 'application/json'}
     response = requests.post(CHAPA_BASE_URL, json=payload, headers=headers)
+  
     response_data = response.json()
 
-    if response_data.get('status') == 'success':
-        return redirect(response_data['data']['checkout_url'])
-    
-    messages.error(request, 'Failed to process payment. Please try again.')
-    return redirect('rental_history')
-
-def verify_payment(request):
-    tx_ref = request.GET.get('tx_ref')
-    transaction_id = request.GET.get('transaction_id')
-
-    if not tx_ref or not transaction_id:
-        messages.error(request, 'Invalid payment verification request.')
+    if response.status_code != 200 or response_data.get('status') != 'success':
+        messages.error(request, 'Failed to process payment. Please try again.')
         return redirect('rental_history')
-
-    url = f"https://api.chapa.co/v1/transaction/verify/{transaction_id}"
-    headers = {'Authorization': f'Bearer {CHAPA_API_KEY}'}
-    response = requests.get(url, headers=headers)
-    data = response.json()
-
-    if data.get('status') == 'success':
-        payment = Payment.objects.filter(transaction_id=transaction_id).first()
-        if payment:
-            payment.status = 'completed'
-            payment.save()
-            messages.success(request, 'Payment successful! Your booking is confirmed.')
-            return redirect('rental_history')
-        messages.error(request, 'Payment verification failed.')
     
-    return redirect('rental_history')
+@login_required
+def initiate_payment(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    if booking.payment_status != "Unpaid":
+        messages.error(request, "This booking has already been paid or is not eligible for payment.")
+        return redirect("rental_history")
 
+    # Create or update Payment instance
+    payment, created = Payment.objects.get_or_create(
+        booking=booking,
+        defaults={
+            "amount": booking.total_price,
+            "payment_method": "Chapa",
+            "status": "Pending",
+            "transaction_id": f"car_rental_{booking.id}_{uuid.uuid4().hex[:8]}"
+        }
+    )
 
+    payload = {
+        "amount": str(booking.total_price),
+        "currency": "ETB",
+        "email": request.user.email,
+        "first_name": request.user.first_name or "User",
+        "last_name": request.user.last_name or "",
+        "tx_ref": payment.transaction_id,
+        "callback_url": request.build_absolute_uri("/payment/verify/"),
+        "return_url": request.build_absolute_uri("/payment/status/"),
+        "customization": {
+            "title": "Ethio Car Rental Payment",
+            "description": f"Payment for booking ID: {booking.id}",
+        }
+    }
+
+    headers = {
+        "Authorization": f"Bearer {settings.CHAPA_SECRET_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post("https://api.chapa.co/v1/transaction/initialize", json=payload, headers=headers)
+    response_data = response.json()
+
+    if response_data.get("status") == "success":
+        return redirect(response_data["data"]["checkout_url"])
+    else:
+        payment.status = "Failed"
+        payment.save()
+        booking.payment_status = "Failed"
+        booking.status = "Rejected"
+        booking.car.is_available = True
+        booking.car.save()
+        booking.save()
+        messages.error(request, "Payment initiation failed. Please try again.")
+        return redirect("rental_history")
+
+@login_required
+def verify_payment(request):
+    tx_ref = request.GET.get("tx_ref")
+    if not tx_ref:
+        messages.error(request, "Invalid payment verification request.")
+        return redirect("payment_fail")
+
+    try:
+        payment = Payment.objects.get(transaction_id=tx_ref)
+        booking = payment.booking
+
+        headers = {"Authorization": f"Bearer {settings.CHAPA_SECRET_KEY}"}
+        verify_url = f"https://api.chapa.co/v1/transaction/verify/{tx_ref}"
+        response = requests.get(verify_url, headers=headers)
+        response_data = response.json()
+
+        if response_data.get("status") == "success":
+            payment.status = "Completed"
+            payment.save()
+            booking.payment_status = "Paid"
+            booking.status = "Approved"
+            booking.save()
+            messages.success(request, "Payment successful! Your booking is confirmed.")
+            return redirect("payment_status")
+        else:
+            payment.status = "Failed"
+            payment.save()
+            booking.payment_status = "Failed"
+            booking.status = "Rejected"
+            booking.car.is_available = True
+            booking.car.save()
+            booking.save()
+            messages.error(request, "Payment failed. Please try again.")
+            return redirect("payment_fail")
+
+    except Payment.DoesNotExist:
+        messages.error(request, "Payment not found.")
+        return redirect("payment_fail")
+
+@login_required
+def payment_status(request):
+    return render(request, "rental/payment_status.html")
+
+@login_required
+def payment_fail(request):
+    return render(request, "rental/payment_fail.html")

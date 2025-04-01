@@ -1,0 +1,19 @@
+{% extends 'rental/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-10 text-center">
+    <div class="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-8">
+        <h1 class="text-3xl font-bold text-gray-800">Payment Gateway</h1>
+        <p class="text-gray-600 mt-2">Order ID: {{ order.order_id }}</p>
+        <p class="text-gray-600">Total Amount: {{ order.amount }}</p>
+        
+        <form method="POST" class="mt-4">
+            {% csrf_token %}
+            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
+                Pay Now
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

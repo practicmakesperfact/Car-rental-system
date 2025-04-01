@@ -23,6 +23,10 @@ urlpatterns = [
     # path('profile/', views.profile, name='profile'),
     # path('reviews/', views.reviews, name='reviews'),
     path('location/', views.locations, name='locations'),
-    path('payment/process/<int:booking_id>', views.process_payment, name='process_payment'),
+    
+    #payment
+    path('payment/process/<int:booking_id>/', views.initiate_payment, name='process_payment'),
     path('payment/verify/', views.verify_payment, name='verify_payment'),
+    path('payment/status/', views.payment_status, name='payment_status'),
+    path('payment/fail/', views.payment_fail, name='payment_fail'),
 ]
