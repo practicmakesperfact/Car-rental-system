@@ -29,4 +29,6 @@ urlpatterns = [
     path('payment/verify/', views.verify_payment, name='verify_payment'),
     path('payment/status/', views.payment_status, name='payment_status'),
     path('payment/fail/', views.payment_fail, name='payment_fail'),
+    # update profile
+    path('profile/update', views.update_profile, name='update_profile'),
 ]

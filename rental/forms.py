@@ -47,9 +47,9 @@ class RegistrationForm(forms.ModelForm):
     id_front = forms.ImageField(required=True,label='Upload ID/passport front page')
     id_back = forms.ImageField(required=True,label='Upload ID/passport back page')
     is_passport_name = forms.CharField(max_length=100, required=True,label='Name on ID/Passport')
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password']
+    # class Meta:
+    #     model = User
+    #     fields = ['username', 'email', 'password']
         
     def extract_text_from_image(self, image_file):
         """ extract text from the uploaded image using OCR"""
@@ -74,10 +74,20 @@ class RegistrationForm(forms.ModelForm):
         confirm_password = cleaned_data.get('confirm_password')
         if password and confirm_password and password != confirm_password:
             raise forms.ValidationError("Passwords do not match. Try again.")
+        
+        # Validate email uniqueness
+        email = cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Email already exists. Please choose a different email.")
         return cleaned_data
          
     def save(self,commit=True):
         """ save the user and create a custom profile """
+        # create the instance with email
+        user= User(
+            username = self.cleaned_data['username'],
+            email = self.cleaned_data['email'],
+        )
         user = super().save(commit=False)
         user.set_password(self.cleaned_data['password'])
         if commit:

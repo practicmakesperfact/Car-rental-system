@@ -14,9 +14,15 @@ from .forms import RegistrationForm
 from django.conf import settings
 from django.http import HttpResponse
 import uuid
+from django import forms
+from django.contrib.auth.forms import UserChangeForm
 
 
 
+class UserProfileForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ['email']
 # Create your views here.
 
 def home(request):
@@ -226,7 +232,17 @@ def profile(request):
     return render(request, 'rental/profile.html', {'profile': profile})
 
 
-
+@login_required
+def update_profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance = request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully.')
+            return redirect('rental_history')
+    else:
+        form = UserProfileForm(instance=request.user)
+    return render(request, 'rental/update_profile.html', {'form': form})
 # Payment Processing
 CHAPA_API_KEY = "YOUR_API_KEY"
 CHAPA_BASE_URL = "https://api.chapa.co/v1/transaction/initialize"
@@ -260,11 +276,20 @@ def process_payment(request, booking_id):
 @login_required
 def initiate_payment(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
-    if booking.payment_status != "Unpaid":
-        messages.error(request, "This booking has already been paid or is not eligible for payment.")
+    if booking.status != "Pending" or booking.payment_status != "Unpaid":
+        messages.error(request, "This booking is not eligible for payment.")
         return redirect("rental_history")
 
-    # Create or update Payment instance
+    # Validate total_price
+    if booking.total_price <= 0:
+        messages.error(request, "Invalid booking amount. Total price must be greater than 0.")
+        return redirect("rental_history")
+
+    # Validate email
+    if not request.user.email:
+        messages.error(request, "User email is required for payment. Please update your profile.")
+        return redirect("rental_history")
+
     payment, created = Payment.objects.get_or_create(
         booking=booking,
         defaults={
@@ -283,7 +308,7 @@ def initiate_payment(request, booking_id):
         "last_name": request.user.last_name or "",
         "tx_ref": payment.transaction_id,
         "callback_url": request.build_absolute_uri("/payment/verify/"),
-        "return_url": request.build_absolute_uri("/payment/status/"),
+        "return_url": request.build_absolute_uri("/payment/success/"),
         "customization": {
             "title": "Ethio Car Rental Payment",
             "description": f"Payment for booking ID: {booking.id}",
@@ -295,12 +320,12 @@ def initiate_payment(request, booking_id):
         "Content-Type": "application/json"
     }
 
-    response = requests.post("https://api.chapa.co/v1/transaction/initialize", json=payload, headers=headers)
-    response_data = response.json()
-
-    if response_data.get("status") == "success":
-        return redirect(response_data["data"]["checkout_url"])
-    else:
+    try:
+        response = requests.post("https://api.chapa.co/v1/transaction/initialize", json=payload, headers=headers)
+        response_data = response.json()
+        print("Chapa Response:", response_data)
+    except requests.exceptions.RequestException as e:
+        print("Request Exception:", str(e))
         payment.status = "Failed"
         payment.save()
         booking.payment_status = "Failed"
@@ -308,9 +333,23 @@ def initiate_payment(request, booking_id):
         booking.car.is_available = True
         booking.car.save()
         booking.save()
-        messages.error(request, "Payment initiation failed. Please try again.")
+        messages.error(request, "Payment initiation failed due to a network error. Please try again.")
         return redirect("rental_history")
 
+    if response_data.get("status") == "success":
+        return redirect(response_data["data"]["checkout_url"])
+    else:
+        print("Chapa Error Details:", response_data)
+        payment.status = "Failed"
+        payment.save()
+        booking.payment_status = "Failed"
+        booking.status = "Rejected"
+        booking.car.is_available = True
+        booking.car.save()
+        booking.save()
+        messages.error(request, f"Payment initiation failed: {response_data.get('message', 'Unknown error')}")
+        return redirect("rental_history")
+    
 @login_required
 def verify_payment(request):
     tx_ref = request.GET.get("tx_ref")
