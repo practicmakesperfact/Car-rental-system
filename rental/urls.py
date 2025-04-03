@@ -27,8 +27,8 @@ urlpatterns = [
     #payment
     path('payment/process/<int:booking_id>/', views.initiate_payment, name='process_payment'),
     path('payment/verify/', views.verify_payment, name='verify_payment'),
-    path('payment/status/', views.payment_status, name='payment_status'),
-    path('payment/fail/', views.payment_fail, name='payment_fail'),
+    path('payment/success/', views.payment_status, name='payment_success'),
+    path('payment/failed/', views.payment_fail, name='payment_failed'),
     # update profile
     path('profile/update', views.update_profile, name='update_profile'),
 ]

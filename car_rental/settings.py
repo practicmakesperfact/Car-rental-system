@@ -14,14 +14,14 @@ from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
+# this is important to redirect to login page if user is not logged in or chapa session is expired
+LOGIN_URL = '/login'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-pf9^vjs8xmgrd1m!8r=cv=2ki6n6qkp21*g88k5!tim9$-m!^r'
-CHAPA_SECRET_KEY = os.getenv("CHAPA_SECRET_KEY")
+CHAPA_SECRET_KEY = 'your test key'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

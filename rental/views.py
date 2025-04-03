@@ -244,7 +244,7 @@ def update_profile(request):
         form = UserProfileForm(instance=request.user)
     return render(request, 'rental/update_profile.html', {'form': form})
 # Payment Processing
-CHAPA_API_KEY = "YOUR_API_KEY"
+CHAPA_API_KEY = "your_test_key"
 CHAPA_BASE_URL = "https://api.chapa.co/v1/transaction/initialize"
 
 def process_payment(request, booking_id):
@@ -255,12 +255,13 @@ def process_payment(request, booking_id):
         'amount': str(amount),
         'currency': 'ETB',
         'email': request.user.email,
-        'tx_ref': request.user.email,
+        # 'tx_ref': request.user.email,
+        'tx_ref': f"car_rental_{booking.id}_{uuid.uuid4().hex[:8]}",
         'callback_url': request.build_absolute_uri("/payment/verify/"),
         'return_url': request.build_absolute_uri("/payment/success/"),
         'customization': {
-            'title': 'Ethio Car Rental Payment',
-            'description': f'Payment for booking ID: {booking.id}',
+            'title': 'Car Rental Pay',
+            'description': f'Payment for booking ID {booking.id}',
         }
     }
 
@@ -302,7 +303,7 @@ def initiate_payment(request, booking_id):
 
     payload = {
         "amount": str(booking.total_price),
-        "currency": "ETB",
+        "currency": "ETB", 
         "email": request.user.email,
         "first_name": request.user.first_name or "User",
         "last_name": request.user.last_name or "",
@@ -310,8 +311,8 @@ def initiate_payment(request, booking_id):
         "callback_url": request.build_absolute_uri("/payment/verify/"),
         "return_url": request.build_absolute_uri("/payment/success/"),
         "customization": {
-            "title": "Ethio Car Rental Payment",
-            "description": f"Payment for booking ID: {booking.id}",
+            "title": "Car Rental Pay",
+            "description": f"Payment for booking ID  {booking.id}",
         }
     }
 
@@ -367,12 +368,12 @@ def verify_payment(request):
         response_data = response.json()
 
         if response_data.get("status") == "success":
-            payment.status = "Completed"
+            payment.status = "Completed" # Payment is confirmed by Chapa
             payment.save()
-            booking.payment_status = "Paid"
-            booking.status = "Approved"
+            booking.payment_status = "Paid" # Payment is marked as paid
+            booking.status = "pending Admin Approval" # Set intermediate state
             booking.save()
-            messages.success(request, "Payment successful! Your booking is confirmed.")
+            messages.success(request, "Payment successful! Your booking is waiting for admin confirmation.")
             return redirect("payment_status")
         else:
             payment.status = "Failed"

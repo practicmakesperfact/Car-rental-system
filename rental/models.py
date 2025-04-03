@@ -49,6 +49,7 @@ class Car(models.Model):
 class Booking(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
+        ('pending Admin Approval', 'Pending Admin Approval'),
         ('Approved', 'Approved'),
         ('Rejected', 'Rejected'),
         ('Completed', 'Completed'),
