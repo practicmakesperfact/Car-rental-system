@@ -21,7 +21,7 @@ LOGIN_URL = '/login'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-pf9^vjs8xmgrd1m!8r=cv=2ki6n6qkp21*g88k5!tim9$-m!^r'
-CHAPA_SECRET_KEY = 'your test key'
+CHAPA_SECRET_KEY = ''
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

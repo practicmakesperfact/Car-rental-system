@@ -244,7 +244,7 @@ def update_profile(request):
         form = UserProfileForm(instance=request.user)
     return render(request, 'rental/update_profile.html', {'form': form})
 # Payment Processing
-CHAPA_API_KEY = "your_test_key"
+CHAPA_API_KEY = ""
 CHAPA_BASE_URL = "https://api.chapa.co/v1/transaction/initialize"
 
 def process_payment(request, booking_id):

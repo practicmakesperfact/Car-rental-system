@@ -17,10 +17,16 @@ class CarAdmin(admin.ModelAdmin):
 admin.site.register(Car,CarAdmin)
 
 # Booking Admin with Search & Filters
+
 class BookingAdmin(admin.ModelAdmin):
-        list_display = ('user', 'car', 'start_date', 'end_date', 'status')
+        list_display = ('id','user', 'car', 'start_date', 'end_date', 'status','payment_status','total_price','created_at')
         search_fields = ('user__username', 'car__name')
-        list_filter = ('status',)
+        list_filter = ('status','payment_status')
+        actions = ['mark_as_completed']
+        
+        def mark_as_completed(self,request,queryset):
+            queryset.update(status='Completed')
+        mark_as_completed.short_description = "Mark selected bookings as completed"
         
 admin.site.register(Booking,BookingAdmin)
 

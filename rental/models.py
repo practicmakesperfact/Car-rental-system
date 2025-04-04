@@ -66,7 +66,7 @@ class Booking(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='Pending')
     payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default='Unpaid')
     loyality_points_earned =models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)   
