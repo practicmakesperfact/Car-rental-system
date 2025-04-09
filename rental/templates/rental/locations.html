@@ -1,21 +1,22 @@
 {% extends 'rental/base.html' %}
-
+{% load static %}
 {% block content %}
-<div class="container mx-auto px-4" data-aos="fade-up">
-    <h1 class="text-4xl font-bold mb-8">Our Locations</h1>
+
+<div class="container mx-auto px-4 py-12 relative z-20" data-aos="fade-up">
+    <h1 class="text-4xl font-bold mb-8 text-white">Our Locations</h1>
     <div class="grid md:grid-cols-2 gap-8">
         <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-2xl font-semibold mb-4">Addis Ababa Branches</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-red-800">Bahir Dar Branches</h2>
             <div class="space-y-4">
                 <div class="border-b pb-4">
-                    <h3 class="font-semibold">Bole Branch</h3>
-                    <p>Address: Bole Road, Next to Bole Medhanialem</p>
-                    <p>Phone: +251 906287552</p>
+                    <h3 class="font-semibold text-blue-600">Main Branch</h3>
+                    <p>Address: Kebele 14, Near Bahir Dar University</p>
+                    <p>Phone:+251 942864312</p>
                 </div>
                 <div class="border-b pb-4">
-                    <h3 class="font-semibold">Piassa Branch</h3>
-                    <p>Address: Piassa, Near National Theater</p>
-                    <p>Phone: +251 906287552</p>
+                    <h3 class="font-semibold text-blue-600">Lake Tana Branch</h3>
+                    <p>Address:Near Lake Tana, Tana Hotel Area</p>
+                    <p>Phone:+251 928768912</p>
                 </div>
             </div>
         </div>
@@ -24,7 +25,7 @@
             <p class="mb-4">We offer convenient pickup and drop-off services at:</p>
             <div class="space-y-4">
                 <div class="border-b pb-4">
-                    <h3 class="font-semibold">Bole International Airport</h3>
+                    <h3 class="font-semibold text-blue-600">Bahir Dar Airport</h3>
                     <p>24/7 Service Available</p>
                     <p>Advance booking required</p>
                 </div>

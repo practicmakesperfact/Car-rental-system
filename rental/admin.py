@@ -26,7 +26,7 @@ class BookingAdmin(admin.ModelAdmin):
         list_filter = ('status','payment_status')
         actions = ['mark_as_completed']
         
-    
+        # for email notification
         def mark_as_completed(self, request, queryset):
             for booking in queryset:
                 if booking.status != "Completed" and booking.payment_status == "Paid":
