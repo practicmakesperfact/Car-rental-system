@@ -92,8 +92,9 @@ class CustomProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15)
     address = models.CharField(max_length=200)
-    id_front = models.ImageField(upload_to='id_documents/',null=True, blank=False)
-    id_back = models.ImageField(upload_to='id_documents/',null=True, blank=False)
+    id_front_image = models.ImageField(upload_to='id_images/front/', null=True, blank=True)
+    id_back_image = models.ImageField(upload_to='id_images/back/', null=True, blank=True)
+    extracted_name = models.CharField(max_length=255, blank=True, null=True)
     def __str__(self):
         return self.user.username
 

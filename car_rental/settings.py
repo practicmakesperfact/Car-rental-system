@@ -12,6 +12,42 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+
+
+# EMAIL_BACKEND ='django.core.mail.backends.console.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT =587
+# EMAIL_USE_TLS =True
+# EMAIL_HOST_USER = 'your email'
+# EMAIL_HOST_PASSWORD = 'your app password'
+
+
+# #DEFAULT EMAIL FOR NOTIFICATIONS
+# DEFAULT_FROM_EMAIL = 'admin@ethiocarrental.com' 
+
+
+#Configure Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'rental': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+    },
+}
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # this is important to redirect to login page if user is not logged in or chapa session is expired
@@ -21,7 +57,7 @@ LOGIN_URL = '/login'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-pf9^vjs8xmgrd1m!8r=cv=2ki6n6qkp21*g88k5!tim9$-m!^r'
-CHAPA_SECRET_KEY = ''
+CHAPA_SECRET_KEY = 'yourchapa secret key'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -38,9 +74,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # custom apps
+    'crispy_forms',
+    'crispy_tailwind',
     'rental.apps.RentalConfig',
     'mathfilters',
+    
 ]
+CRISPY_TEMPLATE_PACK = 'tailwind'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,7 +97,7 @@ ROOT_URLCONF = 'car_rental.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -54,6 +54,44 @@
         .dropdown-menu:hover {
             display: block; /* Keep dropdown visible */
         }
+       /* Custom styles for form fields */
+    .crispy-form input,
+    .crispy-form select,
+    .crispy-form textarea {
+        @apply w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-200 bg-white bg-opacity-80 text-gray-800 placeholder-gray-400;
+    }
+    .crispy-form label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+    }
+    .crispy-form .helptext {
+        @apply hidden; /* Ensure help text is hidden */
+    }
+    .crispy-form .errorlist {
+        @apply text-red-600 text-sm mt-1 list-none;
+    }
+
+    /* Animation for the red car */
+    .car-animation {
+        animation: driveAcross 15s linear infinite;
+    }
+
+    @keyframes driveAcross {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(100vw);
+        }
+    }
+
+    /* Enhance cyberpunk aesthetic with a subtle dark overlay */
+    .absolute.inset-0::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
+        z-index: 1;
+    }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -62,7 +100,7 @@
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-6">
                     <a href="{% url 'home' %}" class="text-2xl font-bold" data-aos="fade-right">
-                        <span>Ethio Car Rental</span>
+                        <span>Habesh Car Rental</span>
                     </a>
                     <!-- Search Bar -->
                      <form method=" GET" action="{% url 'car_list' %}" class="flex">

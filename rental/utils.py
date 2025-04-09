@@ -2,33 +2,39 @@
 import requests
 import logging
 from .models import Car, Booking,Reward
-
+import pytesseract
+from PIL import Image
+import re
 logger = logging.getLogger(__name__)
 
+# Path to Tesseract executable (update if different)
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-def compare_faces(id_image_path, selfie_image_path):
-    """
-    compare ID/passport with live selfie photo to verify identity 
-    return true if it matchs otherwise false
-    """
-    # load ID/passport image
-    id_image = face_recognition.load_image_file(id_image_path)
-    id_encoding = face_recognition.face_encodings(id_image)
-    
-    if len(id_encoding)==0:
-        logger.error("No face found in ID image")
-        return False
-    # load selfie image
-    selfie_image = face_recognition.load_image_file(selfie_image_path)
-    selfie_encoding = face_recognition.face_encodings(selfie_image)
-    if len(selfie_encoding)==0:
-        logger.error("No face found in selfie image")
-        return False
-    # compare faces
-    result = face_recognition.compare_faces([id_encoding[0]],selfie_encoding[0])
-    
-    return result[0]
-    
+def extract_text_from_image(image_path):
+    """Extract text from an image using Tesseract OCR."""
+    try:
+        image = Image.open(image_path)
+        text = pytesseract.image_to_string(image)
+        return text
+    except Exception as e:
+        return str(e)
+
+def extract_name_from_text(text):
+    """Extract the name from the OCR-extracted text."""
+    # Simple heuristic: Look for a line starting with "Name" or similar
+    lines = text.split('\n')
+    for line in lines:
+        if re.search(r'^(Name|Full Name|Given Name)\s*[:\s]', line, re.IGNORECASE):
+            name = re.sub(r'^(Name|Full Name|Given Name)\s*[:\s]', '', line, flags=re.IGNORECASE)
+            return name.strip()
+    # Fallback: Look for a line that looks like a name (e.g., two words, capitalized)
+    for line in lines:
+        if re.match(r'^[A-Z][a-z]+\s[A-Z][a-z]+$', line.strip()):
+            return line.strip()
+    return None
+
+
+
     
     
     

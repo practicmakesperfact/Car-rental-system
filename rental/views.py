@@ -6,17 +6,17 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from .models import Car, Booking, CustomProfile, Reward,Payment
-from .forms import BookingForm, ReviewForm
+from .forms import BookingForm, ReviewForm,CustomUserCreationForm
 from datetime import datetime
 from decimal import Decimal
 from .utils import update_car_location,apply_loyalty_discount
-from .forms import RegistrationForm
+
 from django.conf import settings
 from django.http import HttpResponse
 import uuid
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
-
+from .utils import extract_text_from_image, extract_name_from_text
 
 
 class UserProfileForm(UserChangeForm):
@@ -168,22 +168,57 @@ def redeem_rewards(request):
         messages.error(request, "You don't have enough points to redeem. you need at least 100 points.")
     return redirect('user_rewards')
         
+
+
 def register(request):
     if request.method == 'POST':
-        form = RegistrationForm(request.POST,request.FILES)
+        form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
-           user = form.save()
-           login(request, user)
-           messages.success(request, 'Registration successful. Welcome!')
-           return redirect('home')
-        else:
-            messages.error(request, 'ID verfication failed. Please upload a valid ID/passport.')
-            # return redirect('register')
-    
+            # Save the user and profile (but don't commit to DB yet)
+            user = form.save(commit=False)
+            profile = CustomProfile(
+                user=user,
+                id_front_image=form.cleaned_data['id_front_image'],
+                id_back_image=form.cleaned_data['id_back_image'],
+            )
+
+            # Extract text from ID images
+            front_text = extract_text_from_image(profile.id_front_image.path)
+            back_text = extract_text_from_image(profile.id_back_image.path)
+
+            # Extract name from the text
+            front_name = extract_name_from_text(front_text)
+            back_name = extract_name_from_text(back_text)
+
+            # Use the name from the front image if available, otherwise back
+            extracted_name = front_name or back_name
+
+            if not extracted_name:
+                messages.error(request, "Could not extract name from ID images.")
+                return render(request, 'rental/register.html', {'form': form})
+
+            # Save the extracted name to the profile
+            profile.extracted_name = extracted_name
+            entered_name = form.cleaned_data['full_name']
+
+            # Compare the names (case-insensitive)
+            if extracted_name.lower() == entered_name.lower():
+                # Names match, save the user and profile
+                user.save()
+                profile.user = user
+                profile.save()
+                login(request, user)
+                messages.success(request, "Registration successful! You are now logged in.")
+                return redirect('home')  # Replace with your homepage URL
+            else:
+                # Names don't match
+                messages.error(request, "The name on the ID does not match the entered name.")
+                return render(request, 'rental/register.html', {'form': form})
     else:
-        form = RegistrationForm()
+        form = CustomUserCreationForm()
     return render(request, 'rental/register.html', {'form': form})
-        
+
+
 def user_login(request):
     if request.method=='POST':
         username = request.POST['username']
@@ -243,8 +278,9 @@ def update_profile(request):
     else:
         form = UserProfileForm(instance=request.user)
     return render(request, 'rental/update_profile.html', {'form': form})
+
 # Payment Processing
-CHAPA_API_KEY = ""
+CHAPA_API_KEY = "your_chapa_api_key"
 CHAPA_BASE_URL = "https://api.chapa.co/v1/transaction/initialize"
 
 def process_payment(request, booking_id):
