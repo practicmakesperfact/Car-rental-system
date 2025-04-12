@@ -31,4 +31,9 @@ urlpatterns = [
     path('payment/failed/', views.payment_fail, name='payment_failed'),
     # update profile
     path('profile/update', views.update_profile, name='update_profile'),
+    # for Footer Links
+    path('terms/', views.terms, name='terms'),
+    path('privacy/', views.privacy, name='privacy'),
+    path('faqs/', views.faqs, name='faqs'),
+    path('support/', views.support, name='support'),
 ]

@@ -1,0 +1,71 @@
+{% extends 'rental/base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Privacy Policy Content -->
+    <div class="container mx-auto px-4 py-12 relative z-20" data-aos="fade-up">
+        <h1 class="text-4xl font-bold mb-8 text-red-800 text-center">Privacy Policy</h1>
+        <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-md">
+            <div class="space-y-4">
+                <!-- Data Collection Section -->
+                <div class="privacy-item border-b border-gray-200">
+                    <button class="w-full text-left py-4 flex justify-between items-center focus:outline-none hover:bg-gray-100 transition-colors duration-200" onclick="toggleAccordion(this)">
+                        <h2 class="text-2xl font-semibold text-gray-900">Data Collection</h2>
+                        <svg class="w-6 h-6 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="answer hidden pb-4">
+                        <p class="text-gray-700 mb-4">
+                            At Car Rental, we value your privacy. We collect personal information such as your name, email, phone number, and payment details to process your bookings and provide our services.
+                        </p>
+                    </div>
+                </div>
+                <!-- Data Usage Section -->
+                <div class="privacy-item border-b border-gray-200">
+                    <button class="w-full text-left py-4 flex justify-between items-center focus:outline-none hover:bg-gray-100 transition-colors duration-200" onclick="toggleAccordion(this)">
+                        <h2 class="text-2xl font-semibold text-gray-900">Data Usage</h2>
+                        <svg class="w-6 h-6 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="answer hidden pb-4">
+                        <p class="text-gray-700 mb-4">
+                            Your data is used to:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>Process and confirm your car rental bookings.</li>
+                            <li>Communicate with you regarding your rental and updates.</li>
+                            <li>Improve our services through analytics and feedback.</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Data Protection Section -->
+                <div class="privacy-item border-b border-gray-200">
+                    <button class="w-full text-left py-4 flex justify-between items-center focus:outline-none hover:bg-gray-100 transition-colors duration-200" onclick="toggleAccordion(this)">
+                        <h2 class="text-2xl font-semibold text-gray-900">Data Protection</h2>
+                        <svg class="w-6 h-6 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="answer hidden pb-4">
+                        <p class="text-gray-700">
+                            We implement industry-standard security measures to protect your data. We do not share your personal information with third parties except as required by law or to fulfill your booking (e.g., payment processing).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!-- JavaScript for Accordion -->
+<script>
+    function toggleAccordion(button) {
+        const answer = button.nextElementSibling;
+        answer.classList.toggle('hidden');
+        const icon = button.querySelector('svg');
+        icon.classList.toggle('rotate-180');
+    }
+</script>
+{% endblock %}

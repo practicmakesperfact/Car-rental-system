@@ -433,3 +433,33 @@ def payment_status(request):
 @login_required
 def payment_fail(request):
     return render(request, "rental/payment_fail.html")
+
+
+def terms(request):
+    return render(request, 'rental/terms.html')
+
+def privacy(request):
+    return render(request, 'rental/privacy.html')
+
+def faqs(request):
+    return render(request, 'rental/faqs.html')
+
+def support(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+
+        # Basic validation (you can expand this)
+        if name and email and message:
+            # Here you would typically send an email to your support team
+            # For now, we'll just simulate success
+            # Example: send_mail('Support Request', message, email, ['support@carrental.com'])
+            
+            messages.success(request, 'Thank you for your message! Our team will get back to you soon.')
+            return redirect('support')
+        else:
+            messages.error(request, 'Please fill out all fields correctly.')
+            return redirect('support')
+
+    return render(request, 'rental/support.html')

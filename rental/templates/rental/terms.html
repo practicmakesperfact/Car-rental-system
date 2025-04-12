@@ -1,0 +1,60 @@
+{% extends 'rental/base.html' %}
+{% load static %}
+
+{% block content %}
+
+ 
+
+    <!-- Terms & Conditions Content -->
+    <div class="container mx-auto px-4 py-12 relative z-20" data-aos="fade-up">
+        <h1 class="text-4xl font-bold mb-8 text-red-800 text-center">Terms & Conditions</h1>
+        <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-md">
+            <div class="space-y-4" id="terms-list">
+                <!-- General Terms Section -->
+                <div class="terms-item border-b border-gray-200">
+                    <button class="w-full text-left py-4 flex justify-between items-center focus:outline-none hover:bg-gray-100 transition-colors duration-200" onclick="toggleAccordion(this)">
+                        <h2 class="text-2xl font-semibold text-gray-900">General Terms</h2>
+                        <svg class="w-6 h-6 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="answer hidden pb-4">
+                        <p class="text-gray-700 mb-4">
+                            Welcome to Car Rental. By using our services, you agree to comply with the following terms and conditions. Please read them carefully.
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>You must be at least 21 years old to rent a car.</li>
+                            <li>A valid driver’s license is required at the time of booking.</li>
+                            <li>All payments must be made in advance through our secure payment system.</li>
+                            <li>Cancellations must be made at least 24 hours before the rental period to receive a full refund.</li>
+                            <li>Any damage to the vehicle during the rental period will be the responsibility of the renter.</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Liability Section -->
+                <div class="terms-item border-b border-gray-200">
+                    <button class="w-full text-left py-4 flex justify-between items-center focus:outline-none hover:bg-gray-100 transition-colors duration-200" onclick="toggleAccordion(this)">
+                        <h2 class="text-2xl font-semibold text-gray-900">Liability</h2>
+                        <svg class="w-6 h-6 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="answer hidden pb-4">
+                        <p class="text-gray-700">
+                            Car Rental is not liable for any accidents, injuries, or damages that occur during the rental period. Renters are encouraged to purchase insurance for additional protection.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- JavaScript for Accordion -->
+<script>
+    function toggleAccordion(button) {
+        const answer = button.nextElementSibling;
+        answer.classList.toggle('hidden');
+        const icon = button.querySelector('svg');
+        icon.classList.toggle('rotate-180');
+    }
+</script>
+{% endblock %}
