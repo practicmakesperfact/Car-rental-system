@@ -4,95 +4,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Habesha_Car_Rental</title>
+    <title>Habesha Car Rental</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" 
-    integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" 
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+          integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    
-  
 </head>
 <body class="bg-gray-50">
-    <nav class="gradient-bg text-white shadow-lg">
+    <nav class="gradient-bg text-white shadow-lg relative z-10">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-6">
                     <a href="{% url 'home' %}" class="text-2xl font-bold" data-aos="fade-right">
-                        <span>Habesh Car Rental</span>
+                        <span>Habesha Car Rental</span>
                     </a>
                     <!-- Search Bar -->
-                     <form method=" GET" action="{% url 'car_list' %}" class="flex">
+                    <form method="GET" action="{% url 'car_list' %}" class="flex">
                         <div class="btn-container flex items-center bg-white rounded-lg shadow-md">
                             <input type="text" name="search" placeholder="Search cars, locations..."
-                            class="search-input text-gray-800 p-1 outline-none rounded-lg"
-                            value="{{ request.GET.search }}" />
-                            <button type="submit" class="bg-gray-500 text-white px-4 py-1  hover:bg-gray-600">
+                                   class="search-input text-gray-800 p-1 outline-none rounded-lg sm:w-64 w-full"
+                                   value="{{ request.GET.search }}" />
+                            <button type="submit" class="bg-gray-500 text-white px-4 py-1 hover:bg-gray-600">
                                 Search
                             </button>
                         </div>
-                    </form> 
+                    </form>
                 </div>
                 
-                <!-- Main Navigation -->
-                <div class="flex items-center space-x-6" data-aos="fade-left">
-                    <a href="{% url 'home' %}" class="side-nav-link">Home</a>
-                    <a href="{% url 'about' %}" class="side-nav-link">About</a>
-                    <a href="{% url 'car_list' %}" class="side-nav-link">Available Cars</a>
-                    <a href="{% url 'locations' %}" class="side-nav-link">Locations</a>
+                <!-- Hamburger Menu Button for Mobile -->
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
 
-                    <!-- Dropdown Menu (Fixed Hover Issue) -->
-                    <div class="relative group inline-block">
+                <!-- Main Navigation and Dropdowns -->
+                <div id="nav-links" class="flex items-center space-x-6 md:flex md:space-x-6">
+                    <a href="{% url 'home' %}" class="side-nav-link hidden md:block">Home</a>
+                    <a href="{% url 'about' %}" class="side-nav-link hidden md:block">About</a>
+                    <a href="{% url 'car_list' %}" class="side-nav-link hidden md:block">Available Cars</a>
+                    <a href="{% url 'locations' %}" class="side-nav-link hidden md:block">Locations</a>
+
+                    <!-- Services Dropdown -->
+                    <div class="relative group inline-block hidden md:block">
                         <button class="side-nav-link">Services ▼</button>
                         <div class="absolute left-0 dropdown-menu">
-                            <a href="{% url 'services' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50"> All Services</a>
-                             <a href="{% url 'rental_list' category='tour-package' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Tour Packages</a>
+                            <a href="{% url 'services' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">All Services</a>
+                            <a href="{% url 'rental_list' category='tour-package' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Tour Packages</a>
                             <a href="{% url 'rental_list' category='airport-transfer' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Airport Transfer</a>
                             <a href="{% url 'rental_list' category='wedding-cars' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Wedding Cars</a>
                             <a href="{% url 'rental_list' category='corporate-rentals' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">Corporate Rental</a>
                         </div>
                     </div>
-                    
-          
-                     <!-- Authentication Dropdown -->
-                <div class="relative group inline-block">
-                    <button class="side-nav-link flex items-center">
-                        <i class="fas fa-user-circle mr-2"></i> Account ▼
-                    </button>
-                    <div class="absolute left-0 dropdown-menu w-48">
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'rental_history' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
-                                <i class="fas fa-history mr-2"></i> My Rentals
-                            </a>
-                            <a href="{% url 'update_profile' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
-                                <i class="fas fa-user-edit mr-2"></i> Update Profile
-                            </a>
-                            <a href="{% url 'logout' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
-                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                            </a>
-                        {% else %}
-                            <a href="{% url 'register' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
-                                <i class="fas fa-user-plus mr-2"></i> Sign Up
-                            </a>
-                            <a href="{% url 'login' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
-                                <i class="fas fa-sign-in-alt mr-2"></i> Login
-                            </a>
-                        {% endif %}
+
+                    <!-- Authentication Dropdown -->
+                    <div class="relative group inline-block hidden md:block">
+                        <button class="side-nav-link flex items-center">
+                            <i class="fas fa-user-circle mr-2"></i> Account ▼
+                        </button>
+                        <div class="absolute left-0 dropdown-menu w-48">
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'rental_history' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
+                                    <i class="fas fa-history mr-2"></i> My Rentals
+                                </a>
+                                <a href="{% url 'update_profile' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
+                                    <i class="fas fa-user-edit mr-2"></i> Update Profile
+                                </a>
+                                <a href="{% url 'logout' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </a>
+                            {% else %}
+                                <a href="{% url 'register' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
+                                    <i class="fas fa-user-plus mr-2"></i> Sign Up
+                                </a>
+                                <a href="{% url 'login' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
+                                    <i class="fas fa-sign-in-alt mr-2"></i> Login
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto mt-8 px-4 pb-16">
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="md:hidden bg-gray-800 text-white fixed top-0 right-0 h-full transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+        <div class="flex flex-col p-4 space-y-4 mt-16 w-max">
+            <a href="{% url 'home' %}" class="block py-2">Home</a>
+            <a href="{% url 'about' %}" class="block py-2">About</a>
+            <a href="{% url 'car_list' %}" class="block py-2">Available Cars</a>
+            <a href="{% url 'locations' %}" class="block py-2">Locations</a>
+            <div class="relative">
+                <button class="block py-2 w-full text-left toggle-dropdown">Services ▼</button>
+                <div class="pl-4 space-y-2 hidden dropdown-content">
+                    <a href="{% url 'services' %}" class="block">All Services</a>
+                    <a href="{% url 'rental_list' category='tour-package' %}" class="block">Tour Packages</a>
+                    <a href="{% url 'rental_list' category='airport-transfer' %}" class="block">Airport Transfer</a>
+                    <a href="{% url 'rental_list' category='wedding-cars' %}" class="block">Wedding Cars</a>
+                    <a href="{% url 'rental_list' category='corporate-rentals' %}" class="block">Corporate Rental</a>
+                </div>
+            </div>
+            <div class="relative">
+                <button class="block py-2 w-full text-left flex items-center toggle-dropdown">
+                    <i class="fas fa-user-circle mr-2"></i> Account ▼
+                </button>
+                <div class="pl-4 space-y-2 hidden dropdown-content">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'rental_history' %}" class="block"><i class="fas fa-history mr-2"></i> My Rentals</a>
+                        <a href="{% url 'update_profile' %}" class="block"><i class="fas fa-user-edit mr-2"></i> Update Profile</a>
+                        <a href="{% url 'logout' %}" class="block"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="block"><i class="fas fa-user-plus mr-2"></i> Sign Up</a>
+                        <a href="{% url 'login' %}" class="block"><i class="fas fa-sign-in-alt mr-2"></i> Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container mx-auto mt-4 px-4 pb-8 sm:mt-8 sm:pb-16">
         {% if messages %}
             {% for message in messages %}
-                <!--  Add conditional styling and link for email error -->
-                <div class="{% if message.tags == 'error' %}bg-red-100 border border-red-400 text-red-700{% else %}bg-green-100 border border-green-400 text-green-700{% endif %} px-4 py-3 rounded mb-4" data-aos="fade-down">
+                <div class="{% if message.tags == 'error' %}bg-red-100 border border-red-400 text-red-700{% else %}bg-green-100 border border-green-400 text-green-700{% endif %} px-4 py-3 rounded mb-2 sm:mb-4" data-aos="fade-down">
                     {{ message }}
                     {% if message == "User email is required for payment. Please update your profile." %}
                         <a href="{% url 'update_profile' %}" class="underline ml-2">Update Profile</a>
@@ -103,29 +138,24 @@
         
         {% block content %}
         {% endblock %}
-    </main>    
-    
-    <footer class="gradient-bg text-white mt-16 py-12">
+    </main>
+
+    <footer class="gradient-bg text-white mt-8 sm:mt-16 py-6 sm:py-12">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8" data-aos="fade-up">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8" data-aos="fade-up">
                 <div>
-                    <h3 class="text-xl font-bold mb-4">Contact</h3>
-                    <p class="text-blue-100">Email:habeshacarrentalsystem@gmail.com</p>
-                    <p class="text-blue-100">Phone: +251 942864312</p>
-                    <p class="text-blue-100">Address: Bahir Dar, Ethiopia</p>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-4">Contact</h3>
+                    <p class="text-blue-100 text-sm sm:text-base">Email: habeshacarrentalsystem@gmail.com</p>
+                    <p class="text-blue-100 text-sm sm:text-base">Phone: +251 942864312</p>
+                    <p class="text-blue-100 text-sm sm:text-base">Address: Bahir Dar, Ethiopia</p>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        
-                      
-                    
-                        
+                    <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-4">Quick Links</h3>
+                    <div class="grid grid-cols-2 gap-2 sm:gap-4 text-sm sm:text-base">
                         <li><a href="{% url 'user_rewards' %}" class="hover:text-blue-200 transition-colors duration-200">Rewards</a></li>
                         <li><a href="{% url 'redeem_rewards' %}" class="hover:text-blue-200 transition-colors duration-200">Redeem Rewards</a></li>
                         <li><a href="{% url 'services' %}" class="hover:text-blue-200 transition-colors duration-200">Services</a></li>
                         <li><a href="{% url 'update_profile' %}" class="hover:text-blue-200 transition-colors duration-200">Update Profile</a></li>
-
                         <li><a href="{% url 'terms' %}" class="text-blue-100 hover:text-white transition-colors duration-300">Terms & Conditions</a></li>
                         <li><a href="{% url 'privacy' %}" class="text-blue-100 hover:text-white transition-colors duration-300">Privacy Policy</a></li>
                         <li><a href="{% url 'faqs' %}" class="text-blue-100 hover:text-white transition-colors duration-300">FAQs</a></li>
@@ -133,9 +163,9 @@
                     </div>
                 </div>
             </div>
-            <hr class="my-8 border-t border-blue-200">
-            <div class="text-center mt-8 text-blue-100">
-                <p>&copy; 2025 Habesha Car Rental System. All rights reserved.</p>
+            <hr class="my-4 sm:my-8 border-t border-blue-200">
+            <div class="text-center mt-4 sm:mt-8 text-blue-100 text-sm sm:text-base">
+                <p>© 2025 Habesha Car Rental System. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -145,6 +175,26 @@
             duration: 800,
             once: true,
             offset: 100
+        });
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const dropdownButtons = document.querySelectorAll('.toggle-dropdown');
+
+        // Toggle mobile menu
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('translate-x-full');
+            mobileMenu.classList.toggle('translate-x-0');
+        });
+
+        // Toggle dropdowns in mobile menu
+        dropdownButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const dropdownContent = button.nextElementSibling;
+                dropdownContent.classList.toggle('hidden');
+                const arrow = button.textContent.includes('▼') ? '▼' : '▲';
+                button.textContent = button.textContent.replace(arrow, arrow === '▼' ? '▲' : '▼');
+            });
         });
     </script>
 </body>
