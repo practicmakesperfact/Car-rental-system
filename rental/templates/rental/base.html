@@ -6,9 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Habesha Car Rental</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (!window.tailwind) {
+            document.write('<link rel="stylesheet" href="{% static 'css/tailwind.min.css' %}">');
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" 
           integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" 
           crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}" media="none" onload="this.media='all'">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
@@ -23,11 +29,14 @@
                     </a>
                     <!-- Search Bar -->
                     <form method="GET" action="{% url 'car_list' %}" class="flex">
-                        <div class="btn-container flex items-center bg-white rounded-lg shadow-md">
+                        <div class="relative flex items-center bg-white rounded-full shadow-lg transition-all duration-300 hover:shadow-xl min-w-0">
+                            <span class="absolute left-3 text-gray-400">
+                                <i class="fas fa-search"></i>
+                            </span>
                             <input type="text" name="search" placeholder="Search cars, locations..."
-                                   class="search-input text-gray-800 p-1 outline-none rounded-lg sm:w-64 w-full"
+                                   class="search-input text-gray-800 pl-10 pr-4 py-2 outline-none rounded-full w-full sm:w-64 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-300 transition-colors duration-200"
                                    value="{{ request.GET.search }}" />
-                            <button type="submit" class="bg-gray-500 text-white px-4 py-1 hover:bg-gray-600">
+                            <button type="submit" class="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-2 rounded-full ml-1 hover:from-blue-600 hover:to-blue-800 transition-colors duration-200">
                                 Search
                             </button>
                         </div>
@@ -36,7 +45,7 @@
                 
                 <!-- Hamburger Menu Button for Mobile -->
                 <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-                    <i class="fas fa-bars text-xl"></i>
+                    <i id="menu-icon" class="fas fa-bars text-xl"></i>
                 </button>
 
                 <!-- Main Navigation and Dropdowns -->
@@ -90,8 +99,8 @@
     </nav>
 
     <!-- Mobile Menu -->
-    <div id="mobile-menu" class="md:hidden bg-gray-800 text-white fixed top-0 right-0 h-full transform translate-x-full transition-transform duration-300 ease-in-out z-50">
-        <div class="flex flex-col p-4 space-y-4 mt-16 w-max">
+    <div id="mobile-menu" class="md:hidden bg-gray-800 text-white z-50 hidden">
+        <div class="flex flex-col p-4 space-y-4 w-max">
             <a href="{% url 'home' %}" class="block py-2">Home</a>
             <a href="{% url 'about' %}" class="block py-2">About</a>
             <a href="{% url 'car_list' %}" class="block py-2">Available Cars</a>
@@ -171,29 +180,44 @@
     </footer>
 
     <script>
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 100
-        });
+        try {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 100
+            });
+        } catch (e) {
+            console.error('AOS initialization failed:', e);
+        }
 
         const menuToggle = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
         const dropdownButtons = document.querySelectorAll('.toggle-dropdown');
 
-        // Toggle mobile menu
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('translate-x-full');
-            mobileMenu.classList.toggle('translate-x-0');
-        });
+        if (menuToggle && mobileMenu && menuIcon) {
+            menuToggle.addEventListener('click', () => {
+                const isOpen = !mobileMenu.classList.contains('hidden');
+                mobileMenu.classList.toggle('hidden');
+                // Toggle icon between hamburger and X
+                if (isOpen) {
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                } else {
+                    menuIcon.classList.remove('fa-bars');
+                    menuIcon.classList.add('fa-times');
+                }
+            });
+        }
 
-        // Toggle dropdowns in mobile menu
         dropdownButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const dropdownContent = button.nextElementSibling;
-                dropdownContent.classList.toggle('hidden');
-                const arrow = button.textContent.includes('▼') ? '▼' : '▲';
-                button.textContent = button.textContent.replace(arrow, arrow === '▼' ? '▲' : '▼');
+                if (dropdownContent) {
+                    dropdownContent.classList.toggle('hidden');
+                    const arrow = button.textContent.includes('▼') ? '▼' : '▲';
+                    button.textContent = button.textContent.replace(arrow, arrow === '▼' ? '▲' : '▼');
+                }
             });
         });
     </script>
