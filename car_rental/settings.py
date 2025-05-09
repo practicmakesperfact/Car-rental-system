@@ -90,6 +90,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'rental.middleware.EnsureProfileCompleteMiddleware',
 ]
 
 ROOT_URLCONF = 'car_rental.urls'

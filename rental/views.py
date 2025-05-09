@@ -1,22 +1,22 @@
 import requests
+import uuid
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate,logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from .models import Car, Booking, CustomProfile, Reward,Payment
-from .forms import BookingForm, ReviewForm,CustomUserCreationForm
-from datetime import datetime
-from decimal import Decimal
-from .utils import update_car_location,apply_loyalty_discount
-
-from django.conf import settings
-from django.http import HttpResponse
-import uuid
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
+from django.conf import settings
+from django.http import HttpResponse
+from .models import Car, Booking, CustomProfile, Reward,Payment
+from .forms import BookingForm, ReviewForm,CustomUserCreationForm
+from .forms import CompleteProfileForm
+from .utils import update_car_location,apply_loyalty_discount
 from .utils import extract_text_from_image, extract_name_from_text
+from datetime import datetime
+from decimal import Decimal
 
 
 class UserProfileForm(UserChangeForm):
@@ -268,6 +268,22 @@ def profile(request):
     profile = get_object_or_404(CustomProfile, user=request.user)
     return render(request, 'rental/profile.html', {'profile': profile})
 
+@login_required
+def complete_profile(request):
+    profile, created = CustomProfile.objects.get_or_create(user=request.user)
+
+    if profile.is_complete():
+        return redirect('home')  # or any safe default page
+
+    if request.method == 'POST':
+        form = CompleteProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = CompleteProfileForm(instance=profile)
+
+    return render(request, 'rental/complete_profile.html', {'form': form})
 
 @login_required
 def update_profile(request):
@@ -451,13 +467,8 @@ def support(request):
         name = request.POST.get('name')
         email = request.POST.get('email')
         message = request.POST.get('message')
-
         # Basic validation (you can expand this)
         if name and email and message:
-            # Here you would typically send an email to your support team
-            # For now, we'll just simulate success
-            # Example: send_mail('Support Request', message, email, ['support@carrental.com'])
-            
             messages.success(request, 'Thank you for your message! Our team will get back to you soon.')
             return redirect('support')
         else:

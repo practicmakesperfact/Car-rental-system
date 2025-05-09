@@ -90,11 +90,19 @@ class Booking(models.Model):
         return f"{self.user.username} - {self.car.name} ({self.start_date} to {self.end_date})"
 class CustomProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone_number = models.CharField(max_length=15)
-    address = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=15,blank = True)
+    address = models.CharField(max_length=200, blank=True)
     id_front_image = models.ImageField(upload_to='id_images/front/', null=True, blank=True)
     id_back_image = models.ImageField(upload_to='id_images/back/', null=True, blank=True)
     extracted_name = models.CharField(max_length=255, blank=True, null=True)
+    def is_complete(self):
+        return all([
+            self.phone_number,
+            self.address,
+            self.id_front_image,
+            self.id_back_image,
+            self.extracted_name,
+        ])
     def __str__(self):
         return self.user.username
 

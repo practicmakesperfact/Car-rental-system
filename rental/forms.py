@@ -1,5 +1,5 @@
-import pytesseract
-import cv2
+# import pytesseract
+# import cv2
 from PIL import Image #(PLI=Python Imaging Library)
 from django import forms
 from django.core.exceptions import ValidationError
@@ -68,3 +68,16 @@ class CustomUserCreationForm(UserCreationForm):
                 id_back_image=self.cleaned_data['id_back_image'],
             )
         return user
+class CompleteProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomProfile
+        fields = [
+            'phone_number',
+            'address',
+            'id_front_image',
+            'id_back_image',
+            'extracted_name',
+        ]
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3}),
+        }

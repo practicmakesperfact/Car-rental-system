@@ -16,11 +16,11 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('locations/', views.locations, name='locations'),
     path('rewards/', views.user_rewards, name='user_rewards'),
-    path('rewards/redeem/', views.redeem_rewards,name='redeem_rewards'),
     path('cars/<int:car_id>/add_review/', views.add_review, name='add_review'),
     path('rentals/<str:category>/', views.rental_list, name='rental_list'),
     path("services/", views.services, name="services"),
-    # path('profile/', views.profile, name='profile'),
+    path('profile/', views.profile, name='profile'),
+    path('complete-profile/', views.complete_profile, name='complete_profile'),
     # path('reviews/', views.reviews, name='reviews'),
     path('location/', views.locations, name='locations'),
     

@@ -3,6 +3,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.models import User
+from .models import CustomProfile
 from .models import Booking,Reward
 import logging
 logger = logging.getLogger(__name__)
@@ -47,3 +49,8 @@ def notify_user_on_completion(sender,instance,created,**kwargs):
             )
         except Exception as e:
             logger.error(f"faild to send email for booking {instance.id}: {str(e)}")
+            
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created and not hasattr(instance, 'customprofile'):
+        CustomProfile.objects.create(user=instance)
