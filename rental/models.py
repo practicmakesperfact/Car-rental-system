@@ -20,12 +20,12 @@ class Car(models.Model):
     ]
     
     Location =models.ForeignKey('Location', on_delete=models.SET_NULL, null=True, blank=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
     brand = models.CharField(max_length=50)
     model_year = models.IntegerField()
-    transmission = models.CharField(max_length=1, choices=TRANSMISSION_CHOICES)
+    transmission = models.CharField(max_length=10, choices=TRANSMISSION_CHOICES)
     seats = models.IntegerField()
-    price_per_day = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_day = models.DecimalField(max_digits=15, decimal_places=2)
     image = models.ImageField(upload_to='cars/', blank=True, null=True)
     is_available = models.BooleanField(default=True)
     rating = models.FloatField(default=0.0)
@@ -61,13 +61,13 @@ class Booking(models.Model):
         ('Failed', 'Failed'),
     ]
     
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='Pending')
-    payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default='Unpaid')
+    total_price = models.DecimalField(max_digits=15, decimal_places=2)
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='Pending')
+    payment_status = models.CharField(max_length=15, choices=PAYMENT_STATUS_CHOICES, default='Unpaid')
     loyality_points_earned =models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)   
     
@@ -92,8 +92,8 @@ class CustomProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15,blank = True)
     address = models.CharField(max_length=200, blank=True)
-    id_front_image = models.ImageField(upload_to='id_images/front/', null=True, blank=True)
-    id_back_image = models.ImageField(upload_to='id_images/back/', null=True, blank=True)
+    id_front_image = models.ImageField(upload_to='id_images/front/', null=True, blank=True,serialize = False)
+    id_back_image = models.ImageField(upload_to='id_images/back/', null=True, blank=True,serialize = False)
     extracted_name = models.CharField(max_length=255, blank=True, null=True)
     def is_complete(self):
         return all([
@@ -108,11 +108,11 @@ class CustomProfile(models.Model):
 
 class Payment(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE,null= True, blank=True)
-    amount = models.DecimalField(max_digits=50, decimal_places=2)
+    amount = models.DecimalField(max_digits=100, decimal_places=2)
     payment_date = models.DateTimeField(auto_now_add=True)
     payment_method = models.CharField(max_length=100, choices=[('Chapa', 'Chapa')], default='Chapa')
     transaction_id = models.CharField(max_length=100,unique=True, null=True, blank=True)
-    status = models.CharField(max_length=20,choices=[('Pending', 'Pending'), ('Completed', 'Completed'),('Failed', 'Failed')],default='Pending')
+    status = models.CharField(max_length=100,choices=[('Pending', 'Pending'), ('Completed', 'Completed'),('Failed', 'Failed')],default='Pending')
     
     def __str__(self):
         return f"Payment for {self.booking} - status: {self.status}"
@@ -151,7 +151,7 @@ class Review(models.Model):
 class Reward(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     points = models.PositiveIntegerField(default=0)
-    discount_available = models.DecimalField(max_digits=6,decimal_places=2,default=0.00)
+    discount_available = models.DecimalField(max_digits=10,decimal_places=2,default=0.00)
     
     def __str__(self):
         return f"{self.user.username} - {self.points} points,Discount: ETB{self.discount_available}"
