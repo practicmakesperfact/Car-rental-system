@@ -20,7 +20,6 @@ urlpatterns = [
     path('rentals/<str:category>/', views.rental_list, name='rental_list'),
     path("services/", views.services, name="services"),
     path('profile/', views.profile, name='profile'),
-    path('complete-profile/', views.complete_profile, name='complete_profile'),
     # path('reviews/', views.reviews, name='reviews'),
     path('location/', views.locations, name='locations'),
     

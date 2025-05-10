@@ -268,22 +268,7 @@ def profile(request):
     profile = get_object_or_404(CustomProfile, user=request.user)
     return render(request, 'rental/profile.html', {'profile': profile})
 
-@login_required
-def complete_profile(request):
-    profile, created = CustomProfile.objects.get_or_create(user=request.user)
 
-    if profile.is_complete():
-        return redirect('home')  # or any safe default page
-
-    if request.method == 'POST':
-        form = CompleteProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = CompleteProfileForm(instance=profile)
-
-    return render(request, 'rental/complete_profile.html', {'form': form})
 
 @login_required
 def update_profile(request):
