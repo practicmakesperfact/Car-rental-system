@@ -17,20 +17,29 @@ def extract_text_from_image(image_path):
         text = pytesseract.image_to_string(image)
         return text
     except Exception as e:
-        return str(e)
+        logger.error(f"Error reading image with OCR: {e}")
+        return ""
 
 def extract_name_from_text(text):
-    """Extract the name from the OCR-extracted text."""
+    """Attempt to extract a person's name from OCR text.
+    Looks for lines like 'Name: John Doe' or full names with 2 capitalized words.
+    
+    :param text: Raw OCR text from an ID image
+    :return: Name string or None"""
     # Simple heuristic: Look for a line starting with "Name" or similar
     lines = text.split('\n')
+    
+    # Primary method: Match lines with "Name" patterns
     for line in lines:
         if re.search(r'^(Name|Full Name|Given Name)\s*[:\s]', line, re.IGNORECASE):
-            name = re.sub(r'^(Name|Full Name|Given Name)\s*[:\s]', '', line, flags=re.IGNORECASE)
+            name = re.sub(r'^(Name|Full Name|Given Name)\s*[:\s]*', '', line, flags=re.IGNORECASE)
             return name.strip()
-    # Fallback: Look for a line that looks like a name (e.g., two words, capitalized)
+    
+    # Fallback: Look for a capitalized two-word name (e.g., John Doe)
     for line in lines:
         if re.match(r'^[A-Z][a-z]+\s[A-Z][a-z]+$', line.strip()):
             return line.strip()
+    
     return None
 
 

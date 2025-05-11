@@ -248,15 +248,22 @@ def register(request):
 
 
 def user_login(request):
-    if request.method=='POST':
-        username = request.POST['username']
+    if request.method == 'POST':
+        email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+
+        try:
+            user = User.objects.get(email=email)
+            user = authenticate(request, username=user.username, password=password)
+        except User.DoesNotExist:
+            user = None
+
         if user is not None:
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Invalid username or password.')
+            messages.error(request, 'Invalid email or password.')
+
     return render(request, 'rental/login.html')
 def user_logout(request):
     logout(request)

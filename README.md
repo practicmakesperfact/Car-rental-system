@@ -9,7 +9,7 @@ A secure and fully functional web application for booking and managing car renta
 
 - 🚗 Car listing and booking
 - 🔐 Secure user registration with ID upload and OCR verification
-- 📬 Email-based authentication (optional)
+- 📬 Email-based authentication 
 - 📂 Image handling for ID/passport uploads
 - 📊 Admin dashboard for managing cars and users
 
