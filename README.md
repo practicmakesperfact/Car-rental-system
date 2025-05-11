@@ -28,7 +28,7 @@ A secure and fully functional web application for booking and managing car renta
 ### 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/car-rental-system.git
+git clone https://github.com/practicmakesperfect/car-rental-system.git
 cd car-rental-system
 ```
 
