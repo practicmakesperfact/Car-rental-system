@@ -10,9 +10,10 @@ from django import forms
 from django.contrib.auth.forms import UserChangeForm
 from django.conf import settings
 from django.http import HttpResponse
+from django.db import IntegrityError
+from django.core.files.storage import default_storage
 from .models import Car, Booking, CustomProfile, Reward,Payment
 from .forms import BookingForm, ReviewForm,CustomUserCreationForm
-from .forms import CompleteProfileForm
 from .utils import update_car_location,apply_loyalty_discount
 from .utils import extract_text_from_image, extract_name_from_text
 from datetime import datetime
@@ -175,48 +176,74 @@ def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
-            # Save the user and profile (but don't commit to DB yet)
-            user = form.save(commit=False)
-            profile = CustomProfile(
-                user=user,
-                id_front_image=form.cleaned_data['id_front_image'],
-                id_back_image=form.cleaned_data['id_back_image'],
-            )
+            email = form.cleaned_data['email']
+            full_name = form.cleaned_data['full_name']
+            id_front = form.cleaned_data['id_front_image']
+            id_back = form.cleaned_data['id_back_image']
 
-            # Extract text from ID images
-            front_text = extract_text_from_image(profile.id_front_image.path)
-            back_text = extract_text_from_image(profile.id_back_image.path)
-
-            # Extract name from the text
-            front_name = extract_name_from_text(front_text)
-            back_name = extract_name_from_text(back_text)
-
-            # Use the name from the front image if available, otherwise back
-            extracted_name = front_name or back_name
-
-            if not extracted_name:
-                messages.error(request, "Could not extract name from ID images.")
+            # Check if email already exists
+            if User.objects.filter(email=email).exists():
+                messages.error(request, "An account with this email already exists.")
                 return render(request, 'rental/register.html', {'form': form})
 
-            # Save the extracted name to the profile
-            profile.extracted_name = extracted_name
-            entered_name = form.cleaned_data['full_name']
-
-            # Compare the names (case-insensitive)
-            if extracted_name.lower() == entered_name.lower():
-                # Names match, save the user and profile
+            try:
+                user = form.save(commit=False)
+                user.username = email
+                user.email = email
+                user.first_name = full_name
+                user.is_active = False  # Until email verification
                 user.save()
-                profile.user = user
-                profile.save()
-                login(request, user)
-                messages.success(request, "Registration successful! You are now logged in.")
-                return redirect('home')  # Replace with your homepage URL
-            else:
-                # Names don't match
-                messages.error(request, "The name on the ID does not match the entered name.")
+
+                # Check if a profile already exists for this user (shouldn't, but just in case)
+                if CustomProfile.objects.filter(user=user).exists():
+                    messages.error(request, "A profile already exists for this user(use other image) . or Please login.")
+                    user.delete()
+                    return render(request, 'rental/register.html', {'form': form})
+
+                # (Optional) Check if ID images already exist based on filename
+                if default_storage.exists(f'id_images/front/{id_front.name}') or default_storage.exists(f'id_images/back/{id_back.name}'):
+                    messages.error(request, "An ID image with the same name already exists. Please rename your file and try again.")
+                    user.delete()
+                    return render(request, 'rental/register.html', {'form': form})
+
+                # Create profile
+                profile = CustomProfile.objects.create(
+                    user=user,
+                    phone_number=form.cleaned_data['phone_number'],
+                    address=form.cleaned_data['address'],
+                    id_front_image=id_front,
+                    id_back_image=id_back,
+                )
+
+                # OCR processing
+                front_text = extract_text_from_image(profile.id_front_image.path)
+                back_text = extract_text_from_image(profile.id_back_image.path)
+                extracted_name = extract_name_from_text(front_text) or extract_name_from_text(back_text)
+
+                if not extracted_name:
+                    messages.error(request, "Could not extract name from ID images.")
+                    user.delete()
+                    return render(request, 'rental/register.html', {'form': form})
+
+                if extracted_name.lower() == full_name.lower():
+                    profile.extracted_name = extracted_name
+                    profile.save()
+                    messages.success(request, "Registration successful! Please verify your email.")
+                    return redirect('login')
+                else:
+                    messages.error(request, "The name on the ID does not match the entered name.")
+                    user.delete()
+                    return render(request, 'rental/register.html', {'form': form})
+
+            except IntegrityError:
+                messages.error(request, "Something went wrong. Please try again.")
                 return render(request, 'rental/register.html', {'form': form})
+
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = CustomUserCreationForm()
+
     return render(request, 'rental/register.html', {'form': form})
 
 
