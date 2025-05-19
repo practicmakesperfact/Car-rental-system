@@ -21,6 +21,8 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from rental import views as rental_views
 
+admin.site.site_header = 'HABESHA CAR RENTAL SYSTEM'
+admin.site.index_title = 'ADMIN'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('rental.urls')),
