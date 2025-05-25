@@ -21,8 +21,11 @@ dotenv.load_dotenv()
 
 CHAPA_SECRET_KEY = os.getenv("CHAPA_SECRET_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
+TAWK_TO_WIDGET_ID = os.getenv("TAWK_TO_WIDGET_ID")
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# dotenv.load_dotenv(os.path.join(BASE_DIR, '.env'))
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587

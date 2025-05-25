@@ -496,4 +496,6 @@ def support(request):
             messages.error(request, 'Please fill out all fields correctly.')
             return redirect('support')
 
-    return render(request, 'rental/support.html')
+    return render(request, 'rental/support.html',{
+        'TAWK_TO_WIDGET_ID': settings.TAWK_TO_WIDGET_ID
+    }) 
