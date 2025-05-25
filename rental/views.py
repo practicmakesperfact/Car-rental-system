@@ -1,5 +1,6 @@
 import requests
 import uuid
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate,logout
@@ -12,6 +13,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.db import IntegrityError
 from django.core.files.storage import default_storage
+from django.conf import settings
 from .models import Car, Booking, CustomProfile, Reward,Payment
 from .forms import BookingForm, ReviewForm,CustomUserCreationForm
 from .utils import update_car_location,apply_loyalty_discount
@@ -317,7 +319,7 @@ def update_profile(request):
     return render(request, 'rental/update_profile.html', {'form': form})
 
 # Payment Processing
-CHAPA_API_KEY = "your_chapa_api_key"
+
 CHAPA_BASE_URL = "https://api.chapa.co/v1/transaction/initialize"
 
 def process_payment(request, booking_id):
@@ -338,7 +340,7 @@ def process_payment(request, booking_id):
         }
     }
 
-    headers = {'Authorization': f'Bearer {CHAPA_API_KEY}', 'Content-Type': 'application/json'}
+    headers = {'Authorization': f'Bearer {settings.CHAPA_SECRET_KEY}', 'Content-Type': 'application/json'}
     response = requests.post(CHAPA_BASE_URL, json=payload, headers=headers)
   
     response_data = response.json()

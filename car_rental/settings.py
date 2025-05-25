@@ -14,6 +14,13 @@ from pathlib import Path
 import os
 from pathlib import Path
 from decouple import config
+import dotenv
+dotenv.load_dotenv()
+
+
+
+CHAPA_SECRET_KEY = os.getenv("CHAPA_SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -24,6 +31,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+
 
 #Configure Logging
 LOGGING = {
@@ -53,8 +62,8 @@ LOGIN_URL = '/login'
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-pf9^vjs8xmgrd1m!8r=cv=2ki6n6qkp21*g88k5!tim9$-m!^r'
-CHAPA_SECRET_KEY = 'yourchapa secret key'
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
