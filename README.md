@@ -34,7 +34,7 @@ A secure, feature-rich web application for booking and managing car rentals in E
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/practicmakesperfect/car-rental-system.git
+git clone https://github.com/practicmakesperfact/car-rental-system.git
 cd car-rental-system
 ```
 
