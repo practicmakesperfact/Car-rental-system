@@ -70,7 +70,7 @@ LOGIN_URL = '/login'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['habeshacarrental.onrender.com']
 
 
 # Application definition
@@ -173,6 +173,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+STATICFILES_STORAGE = 'Whitenoise.storage.CompressedManifestStaticFilesStorage'
+MIDDLEWARE.insert(1,'whitenoise.middleware.whiteNoiseMiddleware')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
