@@ -1,2 +1,1 @@
- gunicorn
-car_rental.wsgi:aplication
+web: gunicorn myproject.wsgi
