@@ -1,10 +1,12 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # authentications urls
-     path('', views.user_login, name='login'),
+    path('', views.user_login, name='login'),
     path('password-reset/', auth_views.PasswordResetView.as_view(template_name='rental/password_reset.html'), name='password_reset'),
     path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='rental/password_reset_done.html'), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='rental/password_reset_confirm.html'), name='password_reset_confirm'),
@@ -17,7 +19,7 @@ urlpatterns = [
     path('cars/', views.car_list, name='car_list'),
     path('car/<int:car_id>/', views.car_detail, name='car_detail'),
     path('car/<int:car_id>/book/', views.book_car, name='book_car'),
-     path('booking/<int:booking_id>/confirm/', views.confirm_booking, name='confirm_booking'),
+    path('booking/<int:booking_id>/confirm/', views.confirm_booking, name='confirm_booking'),
     path('rental-history/', views.rental_history, name='rental_history'),
     path('about/', views.about, name='about'),
     path('locations/', views.locations, name='locations'),
@@ -42,3 +44,5 @@ urlpatterns = [
     path('faqs/', views.faqs, name='faqs'),
     path('support/', views.support, name='support'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
