@@ -68,9 +68,9 @@ LOGIN_URL = '/login'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['car-rental-system.onrender.com' ]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -179,10 +179,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+# MIDDLEWARE = [
+#     'whitenoise.middleware.WhiteNoiseMiddleware',
      
-]
+# ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

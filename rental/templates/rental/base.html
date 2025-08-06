@@ -36,7 +36,7 @@
                             </span>
                             <input type="text" name="search" placeholder="Search cars, locations..."
                                    class="search-input text-gray-800 pl-10 pr-4 py-2 outline-none rounded-full w-full sm:w-64 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-300 transition-colors duration-200"
-                                   value="{{ request.GET.search }}" />
+                                   aria-label="Search for cars or locations" value="{{ request.GET.search }}" />
                             <button type="submit" class="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-2 rounded-full ml-1 hover:from-blue-600 hover:to-blue-800 transition-colors duration-200">
                                 Search
                             </button>
@@ -45,7 +45,7 @@
                 </div>
                 
                 <!-- Hamburger Menu Button for Mobile -->
-                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none" aria-label="Toggle menu"> 
                     <i id="menu-icon" class="fas fa-bars text-xl"></i>
                 </button>
 
