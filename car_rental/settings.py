@@ -68,9 +68,9 @@ LOGIN_URL = '/login'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['carrentalsystem.up.railway.app']
+ALLOWED_HOSTS = ['carrentalsystem.up.railway.app', '127.0.0.1', 'localhost']
 
 
 # Application definition
