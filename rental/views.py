@@ -143,7 +143,7 @@ def track_car(request,car_id):
     car = Car.objects.get(id=car_id)
     return render(request, 'track_car.html',{'car':car, 'success':success})
     
-
+@login_required
 def confirm_booking(request,booking_id):
     """confirms a booking and applies a loyalty discount if available"""
     booking = Booking.objects.get(id=booking_id)
