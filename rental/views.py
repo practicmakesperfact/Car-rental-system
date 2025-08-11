@@ -27,7 +27,7 @@ class UserProfileForm(UserChangeForm):
         model = User
         fields = ['email']
 # Create your views here.
-@login_required
+
 def home(request):
     # get 10 featured products in the home page
     featured_cars = Car.objects.filter(is_available = True).order_by('-id')[:9]
@@ -46,11 +46,11 @@ def home(request):
     
     }
     return render(request, 'rental/home.html',context)
-@login_required
+
 def services(request):
     return render(request,'rental/services.html')
 
-@login_required
+
 def rental_list(request, category):
     """
     display list of cars in a specific category
@@ -67,7 +67,7 @@ def rental_list(request, category):
     return render(request, 'rental/rental_list.html', {'cars': cars, 'category': category})
 
 
-@login_required
+
 def book_car(request, car_id):
     """handles booking car"""
     car = get_object_or_404(Car, id=car_id)
@@ -97,7 +97,7 @@ def book_car(request, car_id):
         return redirect('rental_history')
     return render(request, 'rental/book_car.html', {'car': car,})
 
-@login_required
+
 def add_review(request,car_id):
     """
     allow users to add  a review for a car they have rented 
@@ -127,14 +127,14 @@ def add_review(request,car_id):
     form = ReviewForm()
     return render(request, 'rental/add_review.html', {'form': form, 'car': car})
         
-@login_required
+
 def rental_history(request):
     rentals = Booking.objects.filter(user=request.user).order_by('-created_at')
     
     return render(request, 'rental/rental_history.html', {'rentals': rentals})
 
 
-@login_required
+
 def track_car(request,car_id):
     """
     calls the utility functions to fetch GPS  data and display car location.
@@ -143,7 +143,7 @@ def track_car(request,car_id):
     car = Car.objects.get(id=car_id)
     return render(request, 'track_car.html',{'car':car, 'success':success})
     
-@login_required
+
 def confirm_booking(request,booking_id):
     """confirms a booking and applies a loyalty discount if available"""
     booking = Booking.objects.get(id=booking_id)
@@ -155,13 +155,13 @@ def confirm_booking(request,booking_id):
     return render(request,'confirm_booking.html',{'booking':booking})
 
     
-@login_required
+
 def user_rewards(request):
     """displays the logged user's reward points"""
     reward,created = Reward.objects.get_or_create(user=request.user)
     return render(request,"rental/user_rewards.html",{'reward':reward})    
 
-@login_required
+
 def redeem_rewards(request):
     """allow users to redeem reward points for a booking discount for next booking."""
     reward, created = Reward.objects.get_or_create(user=request.user)
@@ -271,10 +271,10 @@ def user_logout(request):
     logout(request)
     return redirect('home')
 
-@login_required
+
 def about(request):
     return render(request, 'rental/about.html')
-@login_required
+
 def car_list(request):
     """
     Displays a list of available cars with search functionality.
@@ -285,7 +285,7 @@ def car_list(request):
         cars = cars.filter(name__icontains=search_query)
     return render(request, 'rental/car_list.html', {'cars': cars, 'search_query': search_query})
 
-@login_required
+
 def car_detail(request, car_id):
     """
     displays a ditail information about a spacific car
@@ -473,16 +473,16 @@ def payment_status(request):
 def payment_fail(request):
     return render(request, "rental/payment_fail.html")
 
-@login_required
+
 def terms(request):
     return render(request, 'rental/terms.html')
 @login_required
 def privacy(request):
     return render(request, 'rental/privacy.html')
-@login_required
+
 def faqs(request):
     return render(request, 'rental/faqs.html')
-@login_required
+
 def support(request):
     if request.method == 'POST':
         name = request.POST.get('name')
